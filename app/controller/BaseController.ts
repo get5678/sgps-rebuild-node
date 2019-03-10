@@ -2,13 +2,14 @@
 
 import { Controller } from 'egg';
 import Deal from '../interface/deal';
+import { Code } from '../utils/code';
 
 export default class BaseController extends Controller implements Deal {
   success = (data: any) => {
     const code: number = 1;
     this.ctx.body = {
       code,
-      msg: '成功',
+      msg: Code[code],
       data,
     };
   }
@@ -17,7 +18,7 @@ export default class BaseController extends Controller implements Deal {
     const { code } = param;
     this.ctx.body = {
       code: code ? code : -1,
-      msg: '失败',
+      msg: Code[code],
     };
   }
 

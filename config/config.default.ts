@@ -8,7 +8,7 @@ export default (appInfo: EggAppInfo) => {
   config.keys = appInfo.name + '_1552123162549_5041';
 
   // add your egg config in here
-  config.middleware = [ 'errorHandler' ];
+  config.middleware = [ 'errorHandler', 'requestLogger' ];
 
   // 配置mysql
   config.mysql = {

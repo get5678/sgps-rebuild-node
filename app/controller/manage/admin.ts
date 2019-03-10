@@ -26,7 +26,6 @@ export default class AdminController extends BaseController {
     try {
       ctx.validate(RegisteInfo);
       const result = await ctx.service.manage.admin.registe(ctx.request.body);
-      console.log('result', result);
       if (result.code && result) {
         return this.error({ code: result.code });
       }
@@ -36,4 +35,11 @@ export default class AdminController extends BaseController {
       this.error({ code: -1 });
     }
   }
+
+  /**
+   * @description 管理端更新个人信息 修改密码
+   */
+  // public async update() {
+  //   const { ctx } = this;
+  // }
 }

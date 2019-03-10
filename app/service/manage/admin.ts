@@ -9,7 +9,7 @@ import encryption from '../../utils/encryption';
 
 export default class AdminServer extends Service {
   public async registe(admin: Admin): Promise<Code> {
-    const { app, ctx: { logger }} = this;
+    const { app, ctx: { logger } } = this;
     const result: Code = {
       code: -1,
     };
@@ -25,12 +25,12 @@ export default class AdminServer extends Service {
       };
       let admins: any = [];
       admins = await app.mysql.select('admin', { where: { admin_phone: admin.phone } });
-      if (admins.length !== 0 ) {
-        return { code: -2 };
+      if (admins.length !== 0) {
+        return { code: 2001 };
       }
       admins = await app.mysql.select('admin', { where: { admin_name: admin.name } });
       if (admins.length !== 0) {
-        return { code: -3 };
+        return { code: 2002 };
       }
 
       const data = await app.mysql.insert('admin', adminInfo);
@@ -49,11 +49,14 @@ export default class AdminServer extends Service {
   public async upadte(admin: UpdateUser): Promise<Code> {
     const { app } = this;
     const { ctx } = this;
-    let user: any;
 
     try {
-      user = await app.mysql.select('admin', { admin_phone: admin.phone });
-
+      const loginPassWord = encryption(admin.phone, admin.password);
+      // 检测用户名密码是否正确
+      const adminError = await app.mysql.select('admin', { admin_password: loginPassWord });
+      if (!adminError.affectedRows) {
+        return { code: 2004 };
+      }
       // 如果用户要更新密码
       if (admin.newPassword) {
         // 新用户名存在 将密码根据新用户名加密

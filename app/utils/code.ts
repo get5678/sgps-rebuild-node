@@ -1,6 +1,9 @@
 'use strict';
+/**
+ * @description 状态码
+ */
 
-module.exports = {
+const Code = {
   1: '请求成功',
   1000: '未知错误',
   2000: '未登录',
@@ -20,3 +23,5 @@ module.exports = {
   6000: '服务器内部错误',
   6200: '接口暂时无法访问',
 };
+
+export { Code };

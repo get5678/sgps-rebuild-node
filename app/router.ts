@@ -18,4 +18,6 @@ export default (app: Application) => {
   router.post('/api/manage/admin/update', controller.manage.admin.update);
   router.post('/api/manage/admin/login', controller.manage.admin.login);
   router.post('/api/manage/admin/logout', controller.manage.admin.logout);
+  router.post('/api/manage/admin/examine', controller.manage.admin.examine);
+  router.get('/api/manage/admin/getList', controller.manage.admin.getList);
 };

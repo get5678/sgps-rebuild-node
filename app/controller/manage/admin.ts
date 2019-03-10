@@ -20,6 +20,20 @@ const UpdateInfo = {
   password: 'string',
 };
 
+const LogoutInfo = {
+  phone: 'string',
+};
+
+const ListInfo = {
+  pageSize: 'number?',
+  pageNum: 'number?',
+};
+
+const ExamineInfo = {
+  id: 'number',
+  state: 'number',
+};
+
 export default class AdminController extends BaseController {
   /**
    * @description 管理端用户注册
@@ -79,10 +93,49 @@ export default class AdminController extends BaseController {
     const { ctx } = this;
 
     try {
-      ctx.session.user = null;
-      this.success({ data: { msg: '请求成功' } });
+      ctx.validate(LogoutInfo);
+      const result = await ctx.service.manage.admin.logout(ctx.request.body);
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      this.success(result.data);
     } catch(err) {
       ctx.logger.error(`========管理端：管理人员登出错误 AdminController.login \n error: ${err}`);
+      this.error({ code: -1 });
+    }
+  }
+
+  public async getList() {
+    const { ctx } = this;
+    let { current = 1 } = ctx.query;
+    let { pageSize = 5 } = ctx.query;
+    try {
+      ctx.validate(ListInfo);
+      if (current <= 0) current = 1;
+      if (pageSize <= 0) pageSize = 5;
+      const result = await ctx.service.manage.admin.showAdmins({ current, pageSize });
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      this.success(result.data);
+    } catch (err) {
+      ctx.logger.error(`========管理端：管理人员待审核人员列表错误 AdminController.login \n error: ${err}`);
+      this.error({ code: -1 });
+    }
+  }
+
+  public async examine() {
+    const { ctx } = this;
+
+    try {
+      ctx.validate(ExamineInfo);
+      const result = await ctx.service.manage.admin.examine(ctx.request.body);
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      this.success(result.data);
+    } catch (err) {
+      ctx.logger.error(`========管理端：管理人员待审核管理错误 AdminController.login \n error: ${err}`);
       this.error({ code: -1 });
     }
   }

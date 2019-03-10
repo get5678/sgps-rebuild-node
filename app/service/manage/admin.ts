@@ -41,6 +41,7 @@ export default class AdminServer extends Service {
       if (data.affectedRows === 0) {
         return result;
       }
+      adminInfo.admin_password = '******';
       return {
         data: adminInfo,
       };
@@ -66,8 +67,13 @@ export default class AdminServer extends Service {
     try {
       // 检测用户名密码是否正确
       const adminError = await app.mysql.query(sql);
-      if (adminError) {
+      const msg = adminError[0];
+      if (!msg) {
         return { code: 2004 };
+      }
+      const userError = await app.mysql.get('admin', { admin_phone: admin.newPhone });
+      if (userError) {
+        return { code: 2001 };
       }
       // 如果用户要更新密码
       if (admin.newPassword) {
@@ -78,18 +84,23 @@ export default class AdminServer extends Service {
           admin.newPassword = encryption(admin.phone, admin.newPassword);
         }
       }
-      console.log('new', adminError.admin_id);
       const info: UpdateInfo = {
-        admin_password: admin.newPassword || admin.password,
+        admin_password: admin.newPassword || loginPassWord,
         admin_phone: admin.newPhone || admin.phone,
       };
-      if (admin.name) info.admin_name = admin.name;
-      console.log('ad', info);
-      const re = await app.mysql.update('admin', info, { where: { admin_id: adminError.admin_id } });
+      if (admin.name) {
+        const nameErr = await app.mysql.get('admin', { admin_name: admin.name });
+        if (nameErr) {
+          return { code: 2002 };
+        }
+        info.admin_name = admin.name;
+      }
+      const re = await app.mysql.update('admin', info, { where: { admin_id: msg.admin_id } });
       if (re.affectedRows === 1) {
-        const result = await app.mysql.select('admin', { where: { admin_phone: admin.newPhone || admin.phone } });
-        ctx.session.user = admin.newPhone || admin.phone;
-        return { data: { ...result } };
+        const result = await app.mysql.get('admin', { admin_phone: admin.newPhone || admin.phone });
+        result.admin_password = '******';
+        ctx.session[admin.newPhone || admin.phone] = admin.newPhone || admin.phone;
+        return { data: result };
       } else {
         return { code: -1 };
       }
@@ -107,7 +118,7 @@ export default class AdminServer extends Service {
     const { ctx } = this;
 
     try {
-      if (ctx.session.user === admin.phone) {
+      if (ctx.session.hasOwnProperty(admin.phone)) {
         return { code : 2008 };
       }
       const password: string = encryption(admin.phone, admin.password);
@@ -119,10 +130,100 @@ export default class AdminServer extends Service {
         return { code: 2004 };
       }
       Err.admin_password = '******';
-      ctx.session.user = admin.phone;
+      ctx.session[admin.phone] = admin.phone;
       return { data: Err };
     } catch (err) {
       ctx.logger.error(`========管理端：管理人员登录错误 AdminServer.login.\n Error: ${err}`);
+      return { code: -1 };
+    }
+  }
+  /**
+   * @description 登出
+   * @param admin User类型
+   */
+  public async logout(admin: User): Promise<Code> {
+    const { ctx } = this;
+
+    if (!ctx.session[admin.phone]) {
+      return { code: 2000 };
+    }
+
+    try {
+      delete ctx.session[admin.phone];
+      return { data: '退出成功' };
+    } catch (err) {
+      ctx.logger.error(`========管理端：管理人员登录错误 AdminServer.logout.\n Error: ${err}`);
+      return { code: -1 };
+    }
+  }
+  /**
+   * @description 注册用户的审核
+   * @param user ExamineInfo 类型
+   */
+  public async examine(user: ExamineInfo): Promise<Code> {
+    const { ctx } = this;
+    const { app } = this;
+
+    try {
+      const info = await app.mysql.get('admin', { admin_id: user.id });
+      if (!info) {
+        return { code: 2003 };
+      }
+      const result = await app.mysql.update('admin', {
+        admin_state: user.state,
+      }, {
+        where: {
+          admin_id: user.id,
+        },
+      });
+      if (result.affectedRows === 1) {
+        return { data: '修改成功' };
+      } else {
+        return { code: -1 };
+      }
+    } catch (err) {
+      ctx.logger.error(`========管理端：管理人员状态管理错误 AdminServer.logout.\n Error: ${err}`);
+      return { code: -1 };
+    }
+  }
+  /**
+   * @description 返回注册用户列表
+   * @param listInfo List类型
+   */
+  public async showAdmins(listInfo: List): Promise<Code> {
+    const { ctx } = this;
+    const { app } = this;
+    const sql = `
+    SELECT SQL_CALC_FOUND_ROWS * FROM admin
+    WHERE admin_state = 0
+    LIMIT ${Number(listInfo.pageSize)}
+    OFFSET ${Number(listInfo.pageSize) * (Number(listInfo.current) - 1)};
+    `;
+
+    try {
+      const list = await app.mysql.query(sql);
+      for (const item of list) {
+        item.admin_password = '******';
+      }
+      const total = await app.mysql.query('select found_rows()');
+      const realTotal = total[0]['found_rows()'];
+      if (Number(listInfo.pageSize) * (Number(listInfo.current) - 1) > realTotal) {
+        return { code: 7001 };
+      }
+      if (!list.length) {
+        return { code: 7000 };
+      }
+      const result = {
+        data: {
+          pageSize: listInfo.pageSize,
+          current: listInfo.current,
+          total: realTotal,
+          list,
+        }
+      }
+      return result;
+    } catch (err) {
+      ctx.logger.error(`========管理端：管理人员待审核名单获取错误 AdminServer.logout.\n Error: ${err}`);
       return { code: -1 };
     }
   }
@@ -142,7 +243,7 @@ export interface Code {
 
 interface User {
   phone: string;
-  password: string;
+  password?: string;
 }
 export interface UpdateInfo {
   admin_name?: string;
@@ -156,4 +257,14 @@ export interface UpdateUser {
   password: string;
   newPhone?: string;
   newPassword?: string;
+}
+
+export interface ExamineInfo {
+  id: number;
+  state: number;
+}
+
+export interface List {
+  pageSize: string;
+  current: string;
 }

@@ -33,7 +33,7 @@ const filterLimitData = data => {
   // 拷贝数据，防止修改原数据
   let result = cloneDeep(data);
   // 修改限制数据
-  result = modifyData(result, encode, [ 'password', 'oldPassword', 'email' ]);
+  result = modifyData(result, encode, [ 'password', 'oldPassword', 'email', 'newPassword' ]);
 
   return result;
 };

@@ -22,6 +22,15 @@ export default (appInfo: EggAppInfo) => {
     app: true,
     agent: false,
   };
+  // session
+  config.session = {
+    key: 'ManageSession',
+    maxAge: 20 * 60 * 1000,
+    httpOnly: true,
+    encrypt: true,
+    renew: true,
+  };
+
   config.security = {
     csrf: {
       enable: false,

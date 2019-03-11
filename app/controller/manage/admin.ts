@@ -69,7 +69,7 @@ export default class AdminController extends BaseController {
       }
       this.success(result.data);
     } catch (err) {
-      ctx.logger.error(`========管理端：管理人员信息修改错误 AdminController.modify , error: ${err}`);
+      ctx.logger.error(`========管理端：管理人员信息修改错误 AdminController.update , error: ${err}`);
       this.error({ code: -1 });
     }
   }
@@ -100,7 +100,7 @@ export default class AdminController extends BaseController {
       }
       this.success(result.data);
     } catch(err) {
-      ctx.logger.error(`========管理端：管理人员登出错误 AdminController.login \n error: ${err}`);
+      ctx.logger.error(`========管理端：管理人员登出错误 AdminController.logout \n error: ${err}`);
       this.error({ code: -1 });
     }
   }
@@ -119,7 +119,7 @@ export default class AdminController extends BaseController {
       }
       this.success(result.data);
     } catch (err) {
-      ctx.logger.error(`========管理端：管理人员待审核人员列表错误 AdminController.login \n error: ${err}`);
+      ctx.logger.error(`========管理端：管理人员待审核人员列表错误 AdminController.getList \n error: ${err}`);
       this.error({ code: -1 });
     }
   }
@@ -135,7 +135,7 @@ export default class AdminController extends BaseController {
       }
       this.success(result.data);
     } catch (err) {
-      ctx.logger.error(`========管理端：管理人员待审核管理错误 AdminController.login \n error: ${err}`);
+      ctx.logger.error(`========管理端：管理人员待审核管理错误 AdminController.examine \n error: ${err}`);
       this.error({ code: -1 });
     }
   }

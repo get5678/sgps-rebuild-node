@@ -219,8 +219,8 @@ export default class AdminServer extends Service {
           current: listInfo.current,
           total: realTotal,
           list,
-        }
-      }
+        },
+      };
       return result;
     } catch (err) {
       ctx.logger.error(`========管理端：管理人员待审核名单获取错误 AdminServer.logout.\n Error: ${err}`);

@@ -26,4 +26,7 @@ export default (app: Application) => {
   router.get('/api/manage/user/getList', controller.manage.user.getList);
   router.get('/api/manage/user/search', controller.manage.user.search);
   router.post('/api/manage/user/update', controller.manage.user.update);
+
+  // 获取验证码
+  router.get('/api/verify/getCaptcha', controller.manage.verify.getCaptcha);
 };

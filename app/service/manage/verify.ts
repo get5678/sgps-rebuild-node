@@ -14,12 +14,10 @@ export default class VerifyService extends Service {
     try {
       const captcha = svgCaptcha.create();
       if (Number(data.type) === 0) {
-        ctx.session['login' + data.phone] = captcha.text;
+        ctx.session[String('login' + data.phone)] = captcha.text.toLowerCase();
       } else if (Number(data.type) === 1) {
-        ctx.session['registe' + data.phone] = captcha.text;
+        ctx.session[String('registe' + data.phone)] = captcha.text.toLowerCase();
       } else return { code: 4000 };
-      ctx.session.maxAge = 1000 * 60 * 10;
-      console.log('data\n\n\n\n', captcha.data);
       return { data: captcha.data };
     } catch (err) {
       ctx.logger.error(`========管理端：获取验证码失败 VerifyServer.getCaptcha.\n Error: ${err}`);

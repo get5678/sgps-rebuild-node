@@ -7,6 +7,7 @@ import BaseController from '../BaseController';
 const LoginInfo = {
   phone: 'string',
   password: 'string',
+  code: 'string',
 };
 
 const RegisteInfo = {
@@ -99,7 +100,7 @@ export default class AdminController extends BaseController {
         return this.error({ code: result.code });
       }
       this.success(result.data);
-    } catch(err) {
+    } catch (err) {
       ctx.logger.error(`========管理端：管理人员登出错误 AdminController.logout \n error: ${err}`);
       this.error({ code: -1 });
     }

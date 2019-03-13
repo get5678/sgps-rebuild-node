@@ -14,11 +14,17 @@ export default class AdminServer extends Service {
    */
   public async registe(admin: Admin): Promise<Code> {
     const { app, ctx: { logger } } = this;
+    const { ctx } = this;
     const result: Code = {
       code: -1,
     };
-
+    const captchaInfo = 'registe' + admin.phone;
     try {
+      if (!ctx.session.hasOwnProperty(captchaInfo)) return { code: 4001 };
+      else if (admin.code.toLowerCase() !== ctx.session[captchaInfo]) return { code: 2009 };
+      if (ctx.session.hasOwnProperty(admin.phone)) {
+        return { code : 2008 };
+      }
       admin.password = encryption(admin.phone, admin.password);
       const adminInfo = {
         admin_identity: admin.identity,
@@ -111,12 +117,14 @@ export default class AdminServer extends Service {
   }
   /**
    * @description 管理端账号登录
-   * @param
+   * @param admin user类型
    */
   public async login(admin: User): Promise<Code> {
     const { app } = this;
     const { ctx } = this;
-
+    const captchaInfo: string = 'login' + admin.phone;
+    if (!ctx.session.hasOwnProperty(captchaInfo)) return { code: 4001 };
+    else if (admin.code.toLowerCase() !== ctx.session[captchaInfo]) return { code: 2009 };
     try {
       if (ctx.session.hasOwnProperty(admin.phone)) {
         return { code : 2008 };
@@ -131,6 +139,7 @@ export default class AdminServer extends Service {
       }
       Err.admin_password = '******';
       ctx.session[admin.phone] = admin.phone;
+      console.log(ctx.session[captchaInfo]);
       return { data: Err };
     } catch (err) {
       ctx.logger.error(`========管理端：管理人员登录错误 AdminServer.login.\n Error: ${err}`);
@@ -234,6 +243,7 @@ export interface Admin {
   password: string;
   identity: number;
   phone: string;
+  code: string;
 }
 
 export interface Code {
@@ -244,6 +254,7 @@ export interface Code {
 interface User {
   phone: string;
   password?: string;
+  code: string;
 }
 export interface UpdateInfo {
   admin_name?: string;

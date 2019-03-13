@@ -25,7 +25,7 @@ export default (appInfo: EggAppInfo) => {
   // session
   config.session = {
     key: 'ManageSession',
-    maxAge: 20 * 60 * 1000,
+    maxAge: 30 * 60 * 1000, // session 30分钟过期
     httpOnly: true,
     encrypt: true,
     renew: true,

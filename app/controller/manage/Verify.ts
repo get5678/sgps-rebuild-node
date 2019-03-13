@@ -20,8 +20,7 @@ export default class VerifyController extends BaseController {
       ctx.validate(CaptchaInfo);
       const result = await ctx.service.manage.verify.getCaptcha({ type, phone });
       if (result && result.code) return this.error({ code: result.code });
-      ctx.response.type = 'text/xml';
-      ctx.body = result.data;
+      this.success(result.data);
     } catch (err) {
       ctx.logger.error(`========管理端：获取验证码失败 VerifyController.getCaptcha.\n Error: ${err}`);
       return { code: 1000 };

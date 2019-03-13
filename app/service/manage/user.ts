@@ -6,6 +6,7 @@
 
 import { Service } from 'egg';
 import { Code, List } from './admin';
+import { UserUpdate, UserUpdateInfo, SearchInfo } from '../../interface/user';
 
 export default class UserServer extends Service {
   /**
@@ -15,7 +16,7 @@ export default class UserServer extends Service {
     const { ctx } = this;
     const { app } = this;
     const sql = `
-    SELECT SQL_CALC_FOUND_ROWS
+    SELECT
     u.user_id,
     u.user_name,
     u.user_phone,
@@ -32,12 +33,11 @@ export default class UserServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
-      const realTotal = total[0].total;
-      if (Number(listInfo.pageSize) * (Number(listInfo.current) - 1) > realTotal) {
+      const total = list.length;
+      if (Number(listInfo.pageSize) * (Number(listInfo.current) - 1) > total) {
         return { code: 7001 };
       }
-      if (!list.length) {
+      if (!total) {
         return { code: 7000 };
       }
       for (const item of list) {
@@ -48,7 +48,7 @@ export default class UserServer extends Service {
         data: {
           pageSize: listInfo.pageSize,
           current: listInfo.current,
-          total: realTotal,
+          total,
           list,
         },
       };
@@ -79,7 +79,7 @@ export default class UserServer extends Service {
         } else userInfo.user_phone = user.phone;
       }
       if (user.name) userInfo.user_name = user.name;
-      if (user.sex && (user.sex <= 1 || user.sex >= 0)) userInfo.user_sex = user.sex;
+      if (user.hasOwnProperty('sex')) userInfo.user_sex = user.sex;
       else return { code: 4000 };
 
       const result = await app.mysql.update('user', userInfo, { where: { user_id: user.id } });
@@ -110,10 +110,15 @@ export default class UserServer extends Service {
     ON u.user_id = a.adress_user_id
     LEFT JOIN building as b
     ON b.building_id = a.adress_building_id
-    WHERE b.building_id = ${search.building}
+    ${search.building ? 'WHERE b.building_id = ' + search.building : ''}
+    ${(search.building && search.name) ? 'AND u.user_name = ' + '\'' + search.name + '\'' : ''}
+    ${(!search.building && search.name) ? 'WHERE u.user_name = ' + '\'' + search.name + '\'' : ''}
     LIMIT ${Number(search.pageSize)}
     OFFSET ${Number(search.pageSize) * (Number(search.current) - 1)};
     `;
+
+    console.log('sql', sql);
+    console.log(search);
 
     try {
       const list = await app.mysql.query(sql);
@@ -137,25 +142,4 @@ export default class UserServer extends Service {
       return { code: 4001 };
     }
   }
-}
-
-export interface UserUpdate {
-  id: number;
-  name?: string;
-  sex?: number;
-  phone?: string;
-  // rider_id?: number; /** 是否可以修改或在别处修改 */
-}
-
-export interface UserUpdateInfo {
-  user_name?: string;
-  user_sex?: number;
-  user_phone?: string;
-}
-
-export interface SearchInfo {
-  building?: 'number';
-  name?: 'string';
-  pageSize?: 'number';
-  current?: 'number';
 }

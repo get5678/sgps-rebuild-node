@@ -5,7 +5,8 @@
  */
 import { Service } from 'egg';
 import * as svgCaptcha from 'svg-captcha';
-import { Code } from './admin';
+import { Data } from '../../interface/verify';
+import { Code } from '../../interface/admin';
 
 export default class VerifyService extends Service {
   public async getCaptcha(data: Data): Promise<Code> {
@@ -26,7 +27,3 @@ export default class VerifyService extends Service {
   }
 }
 
-interface Data {
-  phone: 'string';
-  type: 'number'; // 0为登录 1为注册
-}

@@ -6,6 +6,7 @@
 
 import { Service } from 'egg';
 import encryption from '../../utils/encryption';
+import { Admin, UpdateUser, UpdateInfo, User, ExamineInfo, List, Code } from '../../interface/admin';
 
 export default class AdminServer extends Service {
   /**
@@ -236,46 +237,4 @@ export default class AdminServer extends Service {
       return { code: -1 };
     }
   }
-}
-
-export interface Admin {
-  name: string;
-  password: string;
-  identity: number;
-  phone: string;
-  code: string;
-}
-
-export interface Code {
-  code?: number;
-  data?: any;
-}
-
-interface User {
-  phone: string;
-  password?: string;
-  code: string;
-}
-export interface UpdateInfo {
-  admin_name?: string;
-  admin_phone: string;
-  admin_password: string;
-}
-
-export interface UpdateUser {
-  name?: string;
-  phone: string;
-  password: string;
-  newPhone?: string;
-  newPassword?: string;
-}
-
-export interface ExamineInfo {
-  id: number;
-  state: number;
-}
-
-export interface List {
-  pageSize: string;
-  current: string;
 }

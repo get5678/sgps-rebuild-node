@@ -5,8 +5,8 @@
  */
 
 import { Service } from 'egg';
-import { Code, List } from './admin';
 import { UserUpdate, UserUpdateInfo, SearchInfo } from '../../interface/user';
+import { Code, List } from '../../interface/admin';
 
 export default class UserServer extends Service {
   /**
@@ -116,9 +116,6 @@ export default class UserServer extends Service {
     LIMIT ${Number(search.pageSize)}
     OFFSET ${Number(search.pageSize) * (Number(search.current) - 1)};
     `;
-
-    console.log('sql', sql);
-    console.log(search);
 
     try {
       const list = await app.mysql.query(sql);

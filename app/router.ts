@@ -29,4 +29,11 @@ export default (app: Application) => {
 
   // 获取验证码
   router.get('/api/verify/getCaptcha', controller.manage.verify.getCaptcha);
+
+  // 骑手管理
+  router.post('/api/manage/rider/registe', controller.manage.rider.registe);
+  router.post('/api/manage/rider/update', controller.manage.rider.update);
+  router.post('/api/manage/rider/delete', controller.manage.rider.delete);
+  router.get('/api/manage/rider/search', controller.manage.rider.search);
+  router.get('/api/manage/rider/getList', controller.manage.rider.getList);
 };

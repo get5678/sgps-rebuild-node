@@ -140,7 +140,6 @@ export default class AdminServer extends Service {
       }
       Err.admin_password = '******';
       ctx.session[admin.phone] = admin.phone;
-      console.log(ctx.session[captchaInfo]);
       return { data: Err };
     } catch (err) {
       ctx.logger.error(`========管理端：管理人员登录错误 AdminServer.login.\n Error: ${err}`);

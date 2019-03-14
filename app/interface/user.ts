@@ -18,8 +18,8 @@ export interface UserUpdateInfo {
 }
 
 export interface SearchInfo {
-  building?: 'number';
-  name?: 'string';
-  pageSize?: 'number';
-  current?: 'number';
+  building?: number;
+  name?: string;
+  pageSize?: number;
+  current?: number;
 }

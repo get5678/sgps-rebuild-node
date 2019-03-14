@@ -5,6 +5,7 @@ import 'egg';
 import ExportBaseController from '../../../app/controller/BaseController';
 import ExportHome from '../../../app/controller/home';
 import ExportManageAdmin from '../../../app/controller/manage/admin';
+import ExportManageRider from '../../../app/controller/manage/rider';
 import ExportManageUser from '../../../app/controller/manage/user';
 import ExportManageVerify from '../../../app/controller/manage/Verify';
 
@@ -14,6 +15,7 @@ declare module 'egg' {
     home: ExportHome;
     manage: {
       admin: ExportManageAdmin;
+      rider: ExportManageRider;
       user: ExportManageUser;
       verify: ExportManageVerify;
     }

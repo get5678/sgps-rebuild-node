@@ -108,8 +108,7 @@ export default class AdminController extends BaseController {
 
   public async getList() {
     const { ctx } = this;
-    let { current = 1 } = ctx.query;
-    let { pageSize = 5 } = ctx.query;
+    let { current = 1, pageSize = 5 } = ctx.query;
     try {
       ctx.validate(ListInfo);
       if (current <= 0) current = 1;

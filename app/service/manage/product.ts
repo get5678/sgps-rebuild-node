@@ -5,5 +5,5 @@
 import { Service } from 'egg';
 
 export default class ProductServer extends Service {
-
+  
 }

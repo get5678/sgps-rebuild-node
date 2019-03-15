@@ -31,8 +31,7 @@ export default class UserController extends BaseController {
    */
   public async getList() {
     const { ctx } = this;
-    const { current = 1 } = ctx.query;
-    const { pageSize = 5 } = ctx.query;
+    const { pageSize = 5, current = 1 } = ctx.query;
 
     try {
       ctx.validate(ListInfo);
@@ -71,10 +70,7 @@ export default class UserController extends BaseController {
 
   public async search() {
     const { ctx } = this;
-    const { name = '' } = ctx.query;
-    const { building = '' } = ctx.query;
-    const { pageSize = 5 } = ctx.query;
-    const { current = 1 } = ctx.query;
+    const { pageSize = 5, current = 1, building = '', name = '' } = ctx.query;
 
     try {
       ctx.validate(SearchInfo);

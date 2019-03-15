@@ -13,8 +13,7 @@ export default class UserServer extends Service {
    * @description 获取用户列表
    */
   public async getList(listInfo: List): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
     const sql = `
     SELECT
     u.user_id,
@@ -63,8 +62,7 @@ export default class UserServer extends Service {
    * @param user UserUpdate 类型
    */
   public async update(user: UserUpdate): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
 
     try {
       const idErr = await app.mysql.get('user', { user_id: user.id });
@@ -96,11 +94,9 @@ export default class UserServer extends Service {
    * @param search SearchInfo类型
    */
   public async search(search: SearchInfo): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
     const sql = `
-    SELECT SQL_CALC_FOUND_ROWS
-    u.user_id,
+    SELECT u.user_id,
     u.user_name,
     u.user_phone,
     u.user_sex,
@@ -119,8 +115,7 @@ export default class UserServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
-      const realTotal = total[0].total;
+      const total = list.length;
       if (!list.length) {
         return { code: 5001 };
       }
@@ -128,7 +123,7 @@ export default class UserServer extends Service {
         data: {
           pageSize: search.pageSize,
           current: search.current,
-          total: realTotal,
+          total,
           list,
         },
       };

@@ -12,8 +12,7 @@ export default class RiderServer extends Service {
    * @param rider sex 可以不传入 默认为2(未设置) 0: 男 1: 女
    */
   public async registe(rider: Rider): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
 
     try {
       const info: RegisteInfo = {
@@ -42,8 +41,7 @@ export default class RiderServer extends Service {
    * @param rider 有5个可选参数 详见UpdateRider 接口
    */
   public async update(rider: UpdateRider): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
 
     try {
       const idErr = await app.mysql.get('rider', { rider_id: rider.id });
@@ -78,10 +76,9 @@ export default class RiderServer extends Service {
    * @param condition pageSize current 未传入时候有默认值
    */
   public async search(condition: SearchCondition): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
     const sql = `
-    SELECT SQL_CALC_FOUND_ROWS *
+    SELECT *
     FROM rider as r
     WHERE r.rider_name LIKE '%${condition.name}%'
     LIMIT ${Number(condition.pageSize)} OFFSET ${Number(condition.pageSize) * (Number(condition.current) - 1)};
@@ -89,15 +86,14 @@ export default class RiderServer extends Service {
     try {
       const list = await app.mysql.query(sql);
       if (!list.length) return { code: 7000 };
-      const total = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
-      const realTotal = total[0].total;
-      if (Number(condition.pageSize) * (Number(condition.current) - 1) > realTotal) {
+      const total = list.length;
+      if (Number(condition.pageSize) * (Number(condition.current) - 1) > total) {
         return { code: 7001 };
       }
       const result = {
         pageSize: condition.pageSize,
         current: condition.current,
-        total: realTotal,
+        total,
         list,
       };
       return { data: result };
@@ -111,8 +107,7 @@ export default class RiderServer extends Service {
    * @param id 骑手id
    */
   public async delete({ id }): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
 
     try {
       const idErr = await app.mysql.get('rider', { rider_id: id });
@@ -127,26 +122,24 @@ export default class RiderServer extends Service {
   }
 
   public async getList(condition: ListCondition): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
     const sql = `
-    SELECT SQL_CALC_FOUND_ROWS *
+    SELECT *
     FROM rider as r
     LIMIT ${Number(condition.pageSize)} OFFSET ${Number(condition.pageSize) * (Number(condition.current) - 1)};
     `;
 
     try {
       const list = await app.mysql.query(sql);
-      const total = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
-      const realTotal = total[0].total;
+      const total = list.length;
       if (!list.length) return { code: 7000 };
-      if (Number(condition.pageSize) * (Number(condition.current) - 1) > realTotal) {
+      if (Number(condition.pageSize) * (Number(condition.current) - 1) > total) {
         return { code: 7001 };
       }
       const result = {
         pageSize: condition.pageSize,
         current: condition.current,
-        total: realTotal,
+        total,
         list,
       };
 

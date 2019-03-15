@@ -78,9 +78,7 @@ export default class RiderController extends BaseController {
    */
   public async search() {
     const { ctx } = this;
-    const { pageSize = 5 } = ctx.query;
-    const { current = 1 } = ctx.query;
-    const { name } = ctx.query;
+    const { pageSize = 5, current = 1, name } = ctx.query;
 
     try {
       ctx.validate(SearchInfo);
@@ -117,8 +115,7 @@ export default class RiderController extends BaseController {
    */
   public async getList() {
     const { ctx } = this;
-    const { pageSize = 5 } = ctx.query;
-    const { current = 1 } = ctx.query;
+    const { pageSize = 5, current = 1 } = ctx.query;
 
     try {
       ctx.validate(GetListInfo);

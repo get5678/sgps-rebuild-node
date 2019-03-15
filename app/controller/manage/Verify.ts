@@ -13,8 +13,7 @@ export default class VerifyController extends BaseController {
 
   public async getCaptcha() {
     const { ctx } = this;
-    const { type } = ctx.query;
-    const { phone } = ctx.query;
+    const { type, phone } = ctx.query;
 
     try {
       ctx.validate(CaptchaInfo);

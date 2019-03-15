@@ -62,8 +62,7 @@ export default class AdminServer extends Service {
    * @param admin UpdateUser类型
    */
   public async upadte(admin: UpdateUser): Promise<Code> {
-    const { app } = this;
-    const { ctx } = this;
+    const { ctx, app } = this;
     const loginPassWord = encryption(admin.phone, admin.password);
     const sql = `
     SELECT * FROM admin
@@ -121,8 +120,7 @@ export default class AdminServer extends Service {
    * @param admin user类型
    */
   public async login(admin: User): Promise<Code> {
-    const { app } = this;
-    const { ctx } = this;
+    const { ctx, app } = this;
     const captchaInfo: string = 'login' + admin.phone;
     if (!ctx.session.hasOwnProperty(captchaInfo)) return { code: 4001 };
     else if (admin.code.toLowerCase() !== ctx.session[captchaInfo]) return { code: 2009 };
@@ -170,8 +168,7 @@ export default class AdminServer extends Service {
    * @param user ExamineInfo 类型
    */
   public async examine(user: ExamineInfo): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
 
     try {
       const info = await app.mysql.get('admin', { admin_id: user.id });
@@ -200,13 +197,13 @@ export default class AdminServer extends Service {
    * @param listInfo List类型
    */
   public async showAdmins(listInfo: List): Promise<Code> {
-    const { ctx } = this;
-    const { app } = this;
+    const { ctx, app } = this;
+    const { pageSize, current } = listInfo;
     const sql = `
-    SELECT SQL_CALC_FOUND_ROWS * FROM admin
+    SELECT * FROM admin
     WHERE admin_state = 0
-    LIMIT ${Number(listInfo.pageSize)}
-    OFFSET ${Number(listInfo.pageSize) * (Number(listInfo.current) - 1)};
+    LIMIT ${Number(pageSize)}
+    OFFSET ${Number(pageSize) * (Number(current) - 1)};
     `;
 
     try {
@@ -214,9 +211,8 @@ export default class AdminServer extends Service {
       for (const item of list) {
         item.admin_password = '******';
       }
-      const total = await app.mysql.query('select found_rows()');
-      const realTotal = total[0]['found_rows()'];
-      if (Number(listInfo.pageSize) * (Number(listInfo.current) - 1) > realTotal) {
+      const total = list.length;
+      if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
       if (!list.length) {
@@ -224,9 +220,9 @@ export default class AdminServer extends Service {
       }
       const result = {
         data: {
-          pageSize: listInfo.pageSize,
-          current: listInfo.current,
-          total: realTotal,
+          pageSize,
+          current,
+          total,
           list,
         },
       };

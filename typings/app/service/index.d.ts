@@ -4,6 +4,7 @@
 import 'egg';
 import ExportTest from '../../../app/service/Test';
 import ExportManageAdmin from '../../../app/service/manage/admin';
+import ExportManageCategory from '../../../app/service/manage/category';
 import ExportManageProduct from '../../../app/service/manage/product';
 import ExportManageRider from '../../../app/service/manage/rider';
 import ExportManageUser from '../../../app/service/manage/user';
@@ -14,6 +15,7 @@ declare module 'egg' {
     test: ExportTest;
     manage: {
       admin: ExportManageAdmin;
+      category: ExportManageCategory;
       product: ExportManageProduct;
       rider: ExportManageRider;
       user: ExportManageUser;

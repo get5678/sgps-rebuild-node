@@ -36,4 +36,9 @@ export default (app: Application) => {
   router.post('/api/manage/rider/delete', controller.manage.rider.delete);
   router.get('/api/manage/rider/search', controller.manage.rider.search);
   router.get('/api/manage/rider/getList', controller.manage.rider.getList);
+
+  // 商品种类管理
+  router.post('/api/manage/category/add', controller.manage.category.add);
+  router.post('/api/manage/category/modify', controller.manage.category.modify);
+  router.get('/api/manage/category/search', controller.manage.category.search);
 };

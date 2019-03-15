@@ -43,8 +43,10 @@ module.exports = () => {
     const { logger } = ctx;
     // 日志数据过滤
     const body = filterLimitData(ctx.request.body);
+    const query = filterLimitData(ctx.query);
     // 打印入参
-    logger.info('request body: %j', body);
+    if (ctx.method.toLowerCase() === 'post') logger.info('POST request body: %j', body);
+    if (ctx.method.toLowerCase() === 'get') logger.info('GET query: %j', query);
     await next();
     // 打印出参
     logger.info('response body: %j', ctx.body);

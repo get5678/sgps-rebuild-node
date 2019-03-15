@@ -110,9 +110,9 @@ export default class UserServer extends Service {
     ON u.user_id = a.adress_user_id
     LEFT JOIN building as b
     ON b.building_id = a.adress_building_id
-    ${search.building ? 'WHERE b.building_id = ' + search.building : ''}
-    ${(search.building && search.name) ? 'AND u.user_name = ' + '\'' + search.name + '\'' : ''}
-    ${(!search.building && search.name) ? 'WHERE u.user_name = ' + '\'' + search.name + '\'' : ''}
+    ${search.building ? 'WHERE b.building_id  LIKE ' + '\'%' + search.building + '%\'' : ''}
+    ${(search.building && search.name) ? 'AND u.user_name LIKE ' + '\'%' + search.name + '%\'' : ''}
+    ${(!search.building && search.name) ? 'WHERE u.user_name LIKE ' + '\'%' + search.name + '%\'' : ''}
     LIMIT ${Number(search.pageSize)}
     OFFSET ${Number(search.pageSize) * (Number(search.current) - 1)};
     `;

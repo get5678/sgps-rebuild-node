@@ -23,7 +23,7 @@ export default class RiderServer extends Service {
         rider_phone: rider.phone,
         rider_create_time: app.mysql.literals.now,
       };
-      if (rider.sex) info.rider_sex = rider.sex;
+      if (rider.sex !== undefined) info.rider_sex = rider.sex;
       const nameErr = await app.mysql.get('rider', { rider_name: rider.name });
       if (nameErr) return { code: 2002 };
       const phoneErr = await app.mysql.get('rider', { rider_phone: rider.phone });
@@ -55,7 +55,7 @@ export default class RiderServer extends Service {
       const updateInfo: UpdateInfo = {};
       // 未找到合适方法 所以采用if判断 或可先通过id查询到原有信息替代 如name不存在就使用原信息的name
       if (rider.name) updateInfo.rider_name = rider.name;
-      if (rider.sex) updateInfo.rider_sex = rider.sex;
+      if (rider.sex !== undefined) updateInfo.rider_sex = rider.sex;
       if (rider.identity_number) updateInfo.rider_identity_number = rider.identity_number;
       if (rider.state) updateInfo.rider_state = rider.state;
       const result = await app.mysql.update('rider', updateInfo, {
@@ -81,7 +81,7 @@ export default class RiderServer extends Service {
     const { ctx } = this;
     const { app } = this;
     const sql = `
-    SELECT SQL_CALC_FOUND_ROWS * 
+    SELECT SQL_CALC_FOUND_ROWS *
     FROM rider as r
     WHERE r.rider_name LIKE '%${condition.name}%'
     LIMIT ${Number(condition.pageSize)} OFFSET ${Number(condition.pageSize) * (Number(condition.current) - 1)};
@@ -110,7 +110,7 @@ export default class RiderServer extends Service {
    * @description 删除骑手信息
    * @param id 骑手id
    */
-  public async delete(id): Promise<Code> {
+  public async delete({ id }): Promise<Code> {
     const { ctx } = this;
     const { app } = this;
 
@@ -137,7 +137,7 @@ export default class RiderServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = await app.mysql.query('SELET FOUND_ROWS() AS total;');
+      const total = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
       const realTotal = total[0].total;
       if (!list.length) return { code: 7000 };
       if (Number(condition.pageSize) * (Number(condition.current) - 1) > realTotal) {

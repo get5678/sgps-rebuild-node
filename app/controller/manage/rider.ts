@@ -99,11 +99,10 @@ export default class RiderController extends BaseController {
    */
   public async delete() {
     const { ctx } = this;
-    const { id } = ctx.query;
 
     try {
       ctx.validate(DeleteInfo);
-      const result = await ctx.service.manage.rider.delete({ id });
+      const result = await ctx.service.manage.rider.delete(ctx.request.body);
       if (result && result.code) {
         return this.error(result.code);
       }

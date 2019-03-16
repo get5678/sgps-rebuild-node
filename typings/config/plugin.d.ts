@@ -5,3 +5,4 @@ import 'egg';
 import 'egg-mysql';
 import 'egg-validate';
 import 'egg-logger';
+import 'egg-redis';

@@ -10,6 +10,9 @@ export default (app: Application) => {
   /**
    * @description 小程序接口
    */
+  router.get('/api/custom/banner', controller.custom.banner.banner);
+  // 登陆接口
+  router.post('/api/custom/user/userLogin', controller.user.login.userLogin);
 
   /**
    * @description 管理端接口

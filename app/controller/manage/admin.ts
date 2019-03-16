@@ -7,13 +7,13 @@ import BaseController from '../BaseController';
 const LoginInfo = {
   phone: 'string',
   password: 'string',
-}
+};
 
 const RegisteInfo = {
   ...LoginInfo,
   identity: 'number',
   name: 'string',
-}
+};
 
 export default class AdminController extends BaseController {
   /**

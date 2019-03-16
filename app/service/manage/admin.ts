@@ -69,7 +69,7 @@ export default class AdminServer extends Service {
       const info: UpdateInfo = {
         admin_password: admin.newPassword || admin.password,
         admin_phone: admin.newPhone || admin.phone,
-      }
+      };
       if (admin.name) info.admin_name = admin.name;
       await app.mysql.update('admin', info, { where: { admin_phone: admin.phone } });
       const result = await app.mysql.select('admin', { admin_phone: admin.newPhone || admin.phone });

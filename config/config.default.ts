@@ -34,6 +34,7 @@ export default (appInfo: EggAppInfo) => {
     app: true,
     agent: false,
   };
+  // redis
   config.redis = {
     client: {
       port: 6379,
@@ -42,6 +43,15 @@ export default (appInfo: EggAppInfo) => {
       db: 0,
     },
   };
+  // session
+  config.session = {
+    key: 'ManageSession',
+    maxAge: 30 * 60 * 1000, // session 30分钟过期
+    httpOnly: true,
+    encrypt: true,
+    renew: true,
+  };
+
   config.security = {
     csrf: {
       enable: false,

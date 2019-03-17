@@ -44,4 +44,19 @@ export default (app: Application) => {
   router.post('/api/manage/category/add', controller.manage.category.add);
   router.post('/api/manage/category/modify', controller.manage.category.modify);
   router.get('/api/manage/category/search', controller.manage.category.search);
+
+  // 楼栋管理
+  router.post('/api/manage/building/add', controller.manage.building.add);
+  router.post('/api/manage/building/modify', controller.manage.building.modify);
+  router.get('/api/manage/building/getList', controller.manage.building.getList);
+
+  // 商品管理
+  router.post('/api/manage/product/add', controller.manage.product.add);
+  router.post('/api/manage/product/modify', controller.manage.product.modify);
+  router.get('/api/manage/product/getList', controller.manage.product.getList);
+
+  // 优惠券管理
+  router.post('/api/manage/coupons/add', controller.manage.coupons.add);
+  router.post('/api/manage/coupons/modify', controller.manage.coupons.modify);
+  router.get('/api/manage/coupons/getList', controller.manage.coupons.getList);
 };

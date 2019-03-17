@@ -7,7 +7,7 @@
 import { Service } from 'egg';
 import WXBizDataCrypt from '../../utils/WXBizDataCrypt';
 import * as rp from 'request-promise';
-import * as uuidV1 from 'uuidV1';
+import * as uuidV1 from 'uuid/v1';
 
 export default class UserService extends Service {
   /**

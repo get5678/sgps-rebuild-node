@@ -5,7 +5,9 @@ import 'egg';
 import ExportTest from '../../../app/service/Test';
 import ExportCustomBanner from '../../../app/service/custom/banner';
 import ExportManageAdmin from '../../../app/service/manage/admin';
+import ExportManageBuilding from '../../../app/service/manage/building';
 import ExportManageCategory from '../../../app/service/manage/category';
+import ExportManageCoupons from '../../../app/service/manage/coupons';
 import ExportManageProduct from '../../../app/service/manage/product';
 import ExportManageRider from '../../../app/service/manage/rider';
 import ExportManageUser from '../../../app/service/manage/user';
@@ -20,7 +22,9 @@ declare module 'egg' {
     }
     manage: {
       admin: ExportManageAdmin;
+      building: ExportManageBuilding;
       category: ExportManageCategory;
+      coupons: ExportManageCoupons;
       product: ExportManageProduct;
       rider: ExportManageRider;
       user: ExportManageUser;

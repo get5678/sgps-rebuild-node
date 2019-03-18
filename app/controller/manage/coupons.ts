@@ -6,6 +6,7 @@
 import BaseController from '../BaseController';
 
 const AddInfo = {
+  name: 'string',
   type: 'number',
   discount: 'number?',
   fill: 'number?',
@@ -15,6 +16,7 @@ const AddInfo = {
 };
 
 const ModifyInfo = {
+  name: 'string',
   id: 'number',
   type: 'number?',
   discount: 'number?',

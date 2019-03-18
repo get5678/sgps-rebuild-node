@@ -26,11 +26,11 @@ declare module 'egg' {
       building: ExportManageBuilding;
       category: ExportManageCategory;
       coupons: ExportManageCoupons;
+      order: ExportManageOrder;
       product: ExportManageProduct;
       rider: ExportManageRider;
       user: ExportManageUser;
       verify: ExportManageVerify;
-      order: ExportManageOrder;
     }
     user: {
       login: ExportUserLogin;

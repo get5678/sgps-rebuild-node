@@ -21,6 +21,7 @@ export default class RiderServer extends Service {
         rider_identity_number: rider.identity_number,
         rider_phone: rider.phone,
         rider_create_time: app.mysql.literals.now,
+        rider_building_id: rider.building_id || 0,
       };
       if (rider.sex !== undefined) info.rider_sex = rider.sex;
       const nameErr = await app.mysql.get('rider', { rider_name: rider.name });
@@ -56,6 +57,7 @@ export default class RiderServer extends Service {
       if (rider.sex !== undefined) updateInfo.rider_sex = rider.sex;
       if (rider.identity_number) updateInfo.rider_identity_number = rider.identity_number;
       if (rider.state) updateInfo.rider_state = rider.state;
+      if (rider.identity_number !== undefined) updateInfo.rider_building_id = rider.building_id;
       const result = await app.mysql.update('rider', updateInfo, {
         where: {
           rider_id: rider.id,
@@ -77,22 +79,32 @@ export default class RiderServer extends Service {
    */
   public async search(condition: SearchCondition): Promise<Code> {
     const { ctx, app } = this;
+    const { name, building, pageSize, current } = condition;
     const sql = `
-    SELECT *
-    FROM rider as r
-    WHERE r.rider_name LIKE '%${condition.name}%'
-    LIMIT ${Number(condition.pageSize)} OFFSET ${Number(condition.pageSize) * (Number(condition.current) - 1)};
+    SELECT r.rider_id,
+    r.rider_name,
+    r.rider_phone,
+    r.rider_sex,
+    r.rider_state,
+    r.rider_identity_number,
+    b.building_name
+    FROM rider as r LEFT OUTER JOIN building as b
+    ON b.building_id = r.rider_building_id
+    ${name ? 'WHERE r.rider_name LIKE\'%' + name + '%\'' : ''}
+    ${(name && building) ? 'AND b.building_id = ' + building : ''}
+    ${(!name && building) ? 'WHERE b.building_id = ' + building : ''}
+    LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
     `;
     try {
       const list = await app.mysql.query(sql);
       if (!list.length) return { code: 7000 };
       const total = list.length;
-      if (Number(condition.pageSize) * (Number(condition.current) - 1) > total) {
+      if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
       const result = {
-        pageSize: condition.pageSize,
-        current: condition.current,
+        pageSize,
+        current,
         total,
         list,
       };
@@ -124,8 +136,15 @@ export default class RiderServer extends Service {
   public async getList(condition: ListCondition): Promise<Code> {
     const { ctx, app } = this;
     const sql = `
-    SELECT *
-    FROM rider as r
+    SELECT  r.rider_id,
+    r.rider_name,
+    r.rider_phone,
+    r.rider_sex,
+    r.rider_state,
+    r.rider_identity_number,
+    b.building_name
+    FROM rider as r LEFT OUTER JOIN building as b
+    ON r.rider_building_id = b.building_id
     LIMIT ${Number(condition.pageSize)} OFFSET ${Number(condition.pageSize) * (Number(condition.current) - 1)};
     `;
 

@@ -9,6 +9,7 @@ export interface Rider {
   sex?: number;
   phone: string;
   identity_number: string;
+  building_id?: number;
 }
 
 export interface UpdateRider {
@@ -18,6 +19,7 @@ export interface UpdateRider {
   phone?: string;
   identity_number?: string;
   state?: number;
+  building_id?: number;
 }
 
 export interface ListCondition {
@@ -26,7 +28,8 @@ export interface ListCondition {
 }
 
 export interface SearchCondition extends ListCondition {
-  name: string;
+  name?: string;
+  building?: number;
 }
 
 export interface RegisteInfo {
@@ -36,6 +39,7 @@ export interface RegisteInfo {
   rider_phone: string;
   rider_identity_number: string;
   rider_create_time: Date;
+  rider_building_id: number;
 }
 
 export interface UpdateInfo {
@@ -44,4 +48,5 @@ export interface UpdateInfo {
   rider_phone?: string;
   rider_identity_number?: string;
   rider_state?: number;
+  rider_building_id?: number;
 }

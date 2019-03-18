@@ -10,6 +10,7 @@ const RegisteInfo = {
   sex: 'number?',
   phone: 'string?',
   identity_number: 'string?',
+  building_id: 'number?',
 };
 
 const UpdateInfo = {
@@ -19,12 +20,14 @@ const UpdateInfo = {
   phone: 'string?',
   identity_number: 'string?',
   state: 'number?',
+  building_id: 'number?',
 };
 
 const SearchInfo = {
   pageSize: 'number?',
   current: 'number?',
   name: 'string?',
+  building_id: 'number?',
 };
 
 const DeleteInfo = {

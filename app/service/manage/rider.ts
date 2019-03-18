@@ -57,12 +57,8 @@ export default class RiderServer extends Service {
       if (rider.sex !== undefined) updateInfo.rider_sex = rider.sex;
       if (rider.identity_number) updateInfo.rider_identity_number = rider.identity_number;
       if (rider.state) updateInfo.rider_state = rider.state;
-      if (rider.identity_number !== undefined) updateInfo.rider_building_id = rider.building_id;
-      const result = await app.mysql.update('rider', updateInfo, {
-        where: {
-          rider_id: rider.id,
-        },
-      });
+      if (rider.building_id !== undefined) updateInfo.rider_building_id = rider.building_id;
+      const result = await app.mysql.update('rider', updateInfo, { where: { rider_id: rider.id } });
       if (result.affectedRows === 1) {
         return { data: updateInfo };
       } else {

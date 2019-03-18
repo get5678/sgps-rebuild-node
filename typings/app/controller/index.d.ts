@@ -9,6 +9,7 @@ import ExportManageAdmin from '../../../app/controller/manage/admin';
 import ExportManageBuilding from '../../../app/controller/manage/building';
 import ExportManageCategory from '../../../app/controller/manage/category';
 import ExportManageCoupons from '../../../app/controller/manage/coupons';
+import ExportManageOrder from '../../../app/controller/manage/order';
 import ExportManageProduct from '../../../app/controller/manage/product';
 import ExportManageRider from '../../../app/controller/manage/rider';
 import ExportManageUser from '../../../app/controller/manage/user';
@@ -31,6 +32,7 @@ declare module 'egg' {
       rider: ExportManageRider;
       user: ExportManageUser;
       verify: ExportManageVerify;
+      order: ExportManageOrder;
     }
     user: {
       login: ExportUserLogin;

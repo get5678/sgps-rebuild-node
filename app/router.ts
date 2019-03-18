@@ -59,4 +59,7 @@ export default (app: Application) => {
   router.post('/api/manage/coupons/add', controller.manage.coupons.add);
   router.post('/api/manage/coupons/modify', controller.manage.coupons.modify);
   router.get('/api/manage/coupons/getList', controller.manage.coupons.getList);
+
+  // 订单管理
+  router.get('/api/manage/order/getList', controller.manage.order.getList);
 };

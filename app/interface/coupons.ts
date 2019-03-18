@@ -4,6 +4,7 @@
  */
 
 export interface CouponsAddInfo {
+  name: string;
   type: number;
   discount?: number;
   fill?: number;
@@ -14,6 +15,7 @@ export interface CouponsAddInfo {
 
 export interface CouponsModifyInfo {
   id: number;
+  name?: string;
   type?: number;
   discount?: number;
   fill?: number;

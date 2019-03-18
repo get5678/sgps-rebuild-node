@@ -14,10 +14,11 @@ export default class CouponsServer extends Service {
    */
   public async add(item: CouponsAddInfo): Promise<Code> {
     const { ctx, app } = this;
-    const { type, discount, fill, price, limited_time, state } = item;
+    const { type, discount, fill, price, limited_time, state, name } = item;
 
     try {
       const info = {
+        coupons_name: name,
         coupons_type: type,
         coupons_discount: discount || 10,
         coupons_fill: fill || 0,
@@ -43,7 +44,7 @@ export default class CouponsServer extends Service {
    */
   public async modify(item: CouponsModifyInfo): Promise<Code> {
     const { ctx, app } = this;
-    const { id, type, discount, fill, price, limited_time, state } = item;
+    const { id, type, discount, fill, price, limited_time, state, name } = item;
 
     try {
       const coupons = await app.mysql.get('coupons', { coupons_id: id });
@@ -51,6 +52,7 @@ export default class CouponsServer extends Service {
         return { code: 3003 };
       }
       const info = {
+        coupons_name: name || coupons.coupons_name,
         coupons_type: type || coupons.coupons_type,
         coupons_discount: discount || coupons.coupons_discount,
         coupons_fill: fill || coupons.coupons_fill,

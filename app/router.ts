@@ -13,6 +13,14 @@ export default (app: Application) => {
   router.get('/api/custom/banner', controller.custom.banner.banner);
   // 登陆接口
   router.post('/api/custom/user/userLogin', controller.user.login.userLogin);
+  // 手机号接口
+  router.get('/api/custom/user/phone', controller.user.phone.get); // 获取用户手机号
+  router.put('/api/custom/user/phone', controller.user.phone.put); // 修改用户手机号
+  // 地址接口
+  router.get('/api/custom/address', controller.custom.address.getAddress); // 获取地址
+  router.post('/api/custom/address', controller.custom.address.postAddress); // 添加或更新地址
+  router.delete('/api/custom/address', controller.custom.address.deleteAddress); // 删除地址
+  router.get('/api/custom/building', controller.custom.address.getBuilding); // 获取楼栋列表
 
   /**
    * @description 管理端接口

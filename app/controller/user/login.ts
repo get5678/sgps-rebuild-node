@@ -5,9 +5,8 @@
 import BaseController from '../BaseController';
 
 export default class UserController extends BaseController {
-  async userLogin() {
-    // const { ctx, logger } = this;
-    const { ctx } = this;
+  public async userLogin() {
+    const { ctx, logger } = this;
     // const sessionId = ctx.get('sessionId');
     let result: any;
 
@@ -33,7 +32,7 @@ export default class UserController extends BaseController {
         this.success(result);
       }
     } catch (error) {
-      // logger.error(`======${sessionId}, ${nickName}userLoginError`, error);
+      logger.error(`======${sessionId}, ${nickName}userLoginError`, error);
       console.log(error);
     }
   }

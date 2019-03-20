@@ -14,13 +14,15 @@ export default class OrderServer extends Service {
    */
   public async getList(order: OrderList): Promise<Code> {
     const { ctx, app } = this;
-    const { pageSize, current } = order;
-
+    const { pageSize, current, type } = order;
+    const sql = `
+    SELECT * FROM ${'`order`'}
+    ${type ? 'WHERE order.order_state = ' + type : ''}
+    LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
+    `;
+    
     try {
-      const list = await app.mysql.select('order', {
-        limit: Number(pageSize),
-        offset: Number(pageSize) * (Number(current) - 1),
-      });
+      const list = await app.mysql.query(sql);
       const total = list.length;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };

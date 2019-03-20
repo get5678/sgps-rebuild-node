@@ -8,17 +8,18 @@ import BaseController from '../BaseController';
 const GetListInfo = {
   pageSize: 'number?',
   current: 'number?',
+  type: 'number?',
 };
 
 export default class OrderController extends BaseController {
 
   public async getList() {
     const { ctx } = this;
-    const { pageSize = 5, current = 1 } = ctx.query;
+    const { pageSize = 5, current = 1, type } = ctx.query;
 
     try {
       ctx.validate(GetListInfo);
-      const result = await ctx.service.manage.order.getList({ pageSize, current });
+      const result = await ctx.service.manage.order.getList({ pageSize, current, type });
       if (result && result.code) {
         return this.error({ code: result.code });
       }

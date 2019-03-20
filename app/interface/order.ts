@@ -6,4 +6,5 @@
 export interface OrderList {
   pageSize?: number;
   current?: number;
+  type?: number;
 }

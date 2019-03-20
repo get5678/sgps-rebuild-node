@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @description admin server
+ * @description user login server
  */
 
 import { Service } from 'egg';
@@ -30,7 +30,7 @@ export default class UserService extends Service {
         code,
         sessionId,
       });
-      const { session_key, union_id }: any = userInfo;
+      const { session_key }: any = userInfo;
       let { user_id, user_rider_id }: any = userInfo;
       openId = userInfo.openId;
       sessionId = userInfo.sessionId;
@@ -42,12 +42,13 @@ export default class UserService extends Service {
         };
         return result;
       }
-      console.log('asdsad111112121212121', user_id);
+      // console.log('asdsad111112121212121', user_id);
 
       // 新用户
       if (user_id === '-1') {
         if (encryptedData) {
           const newInfo = new WXBizDataCrypt(appId, session_key);
+          // 只有关注了公众号的账户才能获取到unionID
           userInfo.union_id = newInfo.decryptData(encryptedData, iv).unionId;
         }
         // nickName = Unicode.stringify(nickName);
@@ -55,7 +56,7 @@ export default class UserService extends Service {
           user_name: nickName,
           user_avatarUrl: avatarUrl,
           user_open_id: openId,
-          user_union_id: union_id,
+          user_union_id: userInfo.union_id ? userInfo.union_id : '',
           user_sex: gender,
           user_create_time: mysql.literals.now,
           user_update_time: mysql.literals.now,

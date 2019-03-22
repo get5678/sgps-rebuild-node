@@ -17,7 +17,7 @@ export default class OrderServer extends Service {
     const { pageSize, current } = order;
 
     try {
-      const list = await app.mysql.select('order', {
+      const list = await app.mysql.select('t_order', {
         limit: Number(pageSize),
         offset: Number(pageSize) * (Number(current) - 1),
       });

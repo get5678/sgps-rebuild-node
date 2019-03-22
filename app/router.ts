@@ -21,6 +21,11 @@ export default (app: Application) => {
   router.post('/api/custom/address', controller.custom.address.postAddress); // 添加或更新地址
   router.delete('/api/custom/address', controller.custom.address.deleteAddress); // 删除地址
   router.get('/api/custom/building', controller.custom.address.getBuilding); // 获取楼栋列表
+  // 商品接口
+  router.get('/api/custom/index/product', controller.custom.getIndexList.getList); // 获取首页商品
+  router.get('/api/custom/product', controller.custom.product.getList); // 获取商品
+  // 订单接口
+  router.get('/api/custom/order', controller.custom.order.getList); // 获取订单
 
   /**
    * @description 管理端接口

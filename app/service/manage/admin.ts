@@ -200,7 +200,7 @@ export default class AdminServer extends Service {
     const { ctx, app } = this;
     const { pageSize, current } = listInfo;
     const sql = `
-    SELECT * FROM admin
+    SELECT SQL_CALC_FOUND_ROWS * FROM admin
     WHERE admin_state = 0
     LIMIT ${Number(pageSize)}
     OFFSET ${Number(pageSize) * (Number(current) - 1)};
@@ -211,7 +211,8 @@ export default class AdminServer extends Service {
       for (const item of list) {
         item.admin_password = '******';
       }
-      const total = list.length;
+      const tt = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = tt[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }

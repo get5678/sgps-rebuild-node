@@ -73,7 +73,8 @@ export default class CategoryServer extends Service {
     const { ctx, app } = this;
     const { current, pageSize, name } = condition;
     const sql = `
-    SELECT c.category_id,
+    SELECT SQL_CALC_FOUND_ROWS
+    c.category_id,
     c.category_name,
     c.category_state,
     c.category_is_delete,
@@ -85,7 +86,8 @@ export default class CategoryServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = list.length;
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }

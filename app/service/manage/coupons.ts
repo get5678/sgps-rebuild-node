@@ -77,13 +77,16 @@ export default class CouponsServer extends Service {
   public async getList(co: CouponsCondition): Promise<Code> {
     const { ctx, app } = this;
     const { pageSize, current } = co;
+    const sql = `
+    SELECT SQL_CALC_FOUND_ROWS *
+    FROM coupons
+    LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
+    `;
 
     try {
-      const list = await app.mysql.select('coupons', {
-        limit: Number(pageSize),
-        offset: Number(pageSize) * (Number(current) - 1),
-      });
-      const total = list.length;
+      const list = await app.mysql.query(sql);
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }

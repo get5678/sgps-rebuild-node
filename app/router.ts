@@ -75,4 +75,7 @@ export default (app: Application) => {
 
   // 订单管理
   router.get('/api/manage/order/getList', controller.manage.order.getList);
+
+  // 上传图片
+  router.post('/api/upload', controller.upload.upload);
 };

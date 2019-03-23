@@ -2,7 +2,6 @@
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
-import ExportTest from '../../../app/service/Test';
 import ExportCustomAddress from '../../../app/service/custom/address';
 import ExportCustomBanner from '../../../app/service/custom/banner';
 import ExportCustomGetIndexList from '../../../app/service/custom/getIndexList';
@@ -22,7 +21,6 @@ import ExportUserPhone from '../../../app/service/user/phone';
 
 declare module 'egg' {
   interface IService {
-    test: ExportTest;
     custom: {
       address: ExportCustomAddress;
       banner: ExportCustomBanner;

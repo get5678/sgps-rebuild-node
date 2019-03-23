@@ -6,3 +6,4 @@ import 'egg-mysql';
 import 'egg-validate';
 import 'egg-logger';
 import 'egg-redis';
+import 'egg-cos';

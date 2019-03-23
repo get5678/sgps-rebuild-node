@@ -4,6 +4,7 @@
 import 'egg';
 import ExportBaseController from '../../../app/controller/BaseController';
 import ExportHome from '../../../app/controller/home';
+import ExportUpload from '../../../app/controller/upload';
 import ExportCustomAddress from '../../../app/controller/custom/address';
 import ExportCustomBanner from '../../../app/controller/custom/banner';
 import ExportCustomGetIndexList from '../../../app/controller/custom/getIndexList';
@@ -25,6 +26,7 @@ declare module 'egg' {
   interface IController {
     baseController: ExportBaseController;
     home: ExportHome;
+    upload: ExportUpload;
     custom: {
       address: ExportCustomAddress;
       banner: ExportCustomBanner;

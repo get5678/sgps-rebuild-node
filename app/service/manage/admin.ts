@@ -233,4 +233,23 @@ export default class AdminServer extends Service {
       return { code: -1 };
     }
   }
+  /**
+   * @description 获取管理员详细信息
+   * @param id 管理员ID
+   */
+  public async detail(id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('admin', { admin_id: id });
+      if (!result) {
+        return { code: 2003 };
+      }
+      result.admin_password = '******';
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取管理员信息错误 AdminServer.detail.\n Error: ${err}`);
+      return { code: -1 };
+    }
+  }
 }

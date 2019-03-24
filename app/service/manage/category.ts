@@ -103,4 +103,22 @@ export default class CategoryServer extends Service {
       return { code: 4000 };
     }
   }
+  /**
+   * @description 获取商品种类详情信息
+   * @param id 对应的商品种类ID number类型
+   */
+  public async detail(id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('category', { category_id: id });
+      if (!result) {
+        return { code: 2003 };
+      }
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取商品详情失败 CategoryServer.detail.\n Error: ${err}`);
+      return { code: 4000 };
+    }
+  }
 }

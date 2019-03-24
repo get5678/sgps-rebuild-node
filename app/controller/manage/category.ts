@@ -22,6 +22,10 @@ const SearchInfo = {
   name: 'string?',
 };
 
+const DetailInfo = {
+  id: 'number?',
+};
+
 export default class CategoryController extends BaseController {
   /**
    * @description 添加商品种类
@@ -75,6 +79,25 @@ export default class CategoryController extends BaseController {
       return this.success(result.data);
     } catch (err) {
       ctx.logger.error(`========管理端：修改商品种类失败 CategoryController.modify.\n Error: ${err}`);
+      return { code: 4000 };
+    }
+  }
+  /**
+   * @description GET 请求 获取商品种类信息
+   */
+  public async detail() {
+    const { ctx } = this;
+    const { id } = ctx.query;
+
+    try {
+      ctx.validate(DetailInfo);
+      const result = await ctx.service.manage.category.detail(Number(id));
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取商品种类详情失败 CategoryController.detail.\n Error: ${err}`);
       return { code: 4000 };
     }
   }

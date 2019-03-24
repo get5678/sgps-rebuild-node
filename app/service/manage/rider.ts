@@ -165,4 +165,22 @@ export default class RiderServer extends Service {
       return { code: 4001 };
     }
   }
+  /**
+   * @description 获取详情
+   * @params id: 通过对应ID 获取详细信息
+   */
+  public async detai(id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('rider', { rider_id: id } );
+      if (!result) {
+        return { code: 2003 };
+      }
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取骑手详细信息错误 RiderServer.detail.\n Error: ${err}`);
+      return { code: 4001 };
+    }
+  }
 }

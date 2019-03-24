@@ -37,6 +37,7 @@ export default (app: Application) => {
   router.post('/api/manage/admin/logout', controller.manage.admin.logout);
   router.post('/api/manage/admin/examine', controller.manage.admin.examine);
   router.get('/api/manage/admin/getList', controller.manage.admin.getList);
+  router.get('/api/manage/admin/detail', controller.manage.admin.detail);
 
   // 用户管理
   router.get('/api/manage/user/getList', controller.manage.user.getList);
@@ -52,11 +53,13 @@ export default (app: Application) => {
   router.post('/api/manage/rider/delete', controller.manage.rider.delete);
   router.get('/api/manage/rider/search', controller.manage.rider.search);
   router.get('/api/manage/rider/getList', controller.manage.rider.getList);
+  router.get('/api/manage/rider/detail', controller.manage.rider.detail);
 
   // 商品种类管理
   router.post('/api/manage/category/add', controller.manage.category.add);
   router.post('/api/manage/category/modify', controller.manage.category.modify);
   router.get('/api/manage/category/search', controller.manage.category.search);
+  router.get('/api/manage/category/detail', controller.manage.category.detail);
 
   // 楼栋管理
   router.post('/api/manage/building/add', controller.manage.building.add);
@@ -72,6 +75,7 @@ export default (app: Application) => {
   router.post('/api/manage/coupons/add', controller.manage.coupons.add);
   router.post('/api/manage/coupons/modify', controller.manage.coupons.modify);
   router.get('/api/manage/coupons/getList', controller.manage.coupons.getList);
+  router.get('/api/manage/coupons/detail', controller.manage.coupons.detail);
 
   // 订单管理
   router.get('/api/manage/order/getList', controller.manage.order.getList);

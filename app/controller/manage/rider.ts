@@ -39,6 +39,10 @@ const GetListInfo = {
   current: 'number?',
 };
 
+const DetailInfo = {
+  id: 'number?',
+};
+
 export default class RiderController extends BaseController {
   /**
    * @description 注册(将用户变为骑手)
@@ -129,6 +133,23 @@ export default class RiderController extends BaseController {
       return this.success(result.data);
     } catch (err) {
       ctx.logger.error(`========管理端：获取骑手列表出现错误 RiderController.getList.\n Error: ${err}`);
+      return { code: 4001 };
+    }
+  }
+
+  public async detail() {
+    const { ctx } = this;
+    const { id } = ctx.query;
+
+    try {
+      ctx.validate(DetailInfo);
+      const result = await ctx.service.manage.rider.detai(id);
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取骑手详情出现错误 RiderController.detail.\n Error: ${err}`);
       return { code: 4001 };
     }
   }

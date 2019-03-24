@@ -102,4 +102,22 @@ export default class CouponsServer extends Service {
       return { code: 4000 };
     }
   }
+  /**
+   * @description 获取优惠券详情信息
+   * @param id 对应优惠券id
+   */
+  public async detail(id): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('coupons', { coupons_id: id });
+      if (!result) {
+        return { code: 2003 };
+      }
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取优惠券列表 CouponsServer.detail.\n Error: ${err}`);
+      return { code: 4000 };
+    }
+  }
 }

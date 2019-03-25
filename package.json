@@ -22,9 +22,9 @@
     "clean": "ets clean"
   },
   "dependencies": {
-    "cos-nodejs-sdk-v5": "^2.5.7",
     "crypto": "^1.0.1",
     "egg": "^2.6.1",
+    "egg-cos": "^1.0.2",
     "egg-logger": "^2.3.2",
     "egg-mysql": "^3.0.0",
     "egg-scripts": "^2.6.0",
@@ -42,6 +42,7 @@
     "@types/supertest": "^2.0.0",
     "autod": "^3.0.1",
     "autod-egg": "^1.1.0",
+    "cos-nodejs-sdk-v5": "^2.5.7",
     "egg-bin": "^4.11.0",
     "egg-ci": "^1.8.0",
     "egg-mock": "^3.16.0",

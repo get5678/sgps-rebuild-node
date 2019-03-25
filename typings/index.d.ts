@@ -6,5 +6,6 @@ declare module 'egg' {
   interface Application {
     mysql: any;
     redis: any;
+    cos: any;
   }
 }

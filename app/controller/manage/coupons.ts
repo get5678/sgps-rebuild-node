@@ -31,6 +31,10 @@ const GetListInfo = {
   current: 'number?',
 };
 
+const DetailInfo = {
+  id: 'string?',
+};
+
 export default class CouponsController extends BaseController {
   /**
    * @description 添加优惠券
@@ -84,6 +88,25 @@ export default class CouponsController extends BaseController {
       return this.success(result.data);
     } catch (err) {
       ctx.logger.error(`========管理端：修改优惠券信息失败 CouponsController.getList.\n Error: ${err}`);
+      return { code: 4000 };
+    }
+  }
+  /**
+   * @description GET请求 获取优惠券详情
+   */
+  public async detail() {
+    const { ctx } = this;
+    const { id } = ctx.query;
+
+    try {
+      ctx.validate(DetailInfo);
+      const result = await ctx.service.manage.coupons.detail(Number(id));
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      ctx.logger.error(`========管理端：修改优惠券信息失败 CouponsController.detail.\n Error: ${err}`);
       return { code: 4000 };
     }
   }

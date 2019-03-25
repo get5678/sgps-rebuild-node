@@ -83,17 +83,18 @@ export default class ProductServer extends Service {
     const { ctx, app } = this;
     const { name, pageSize, current } = condition;
     const sql = `
-    SELECT p.*,
+    SELECT SQL_CALC_FOUND_ROWS p.*,
     c.category_name
     FROM product as p LEFT OUTER JOIN category as c
     ON c.category_id = p.product_category_id
     ${name ? 'WHERE p.product_name LIKE \'%' + name + '%\'' : ''}
     LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
     `;
-    
+
     try {
       const list = await app.mysql.query(sql);
-      const total = list.length;
+      const t = await app.mysql.query('SELECT FOUND_ROWS AS total');
+      const total = t[0].total;
       const result = {
         pageSize,
         current,

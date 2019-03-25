@@ -77,13 +77,16 @@ export default class CouponsServer extends Service {
   public async getList(co: CouponsCondition): Promise<Code> {
     const { ctx, app } = this;
     const { pageSize, current } = co;
+    const sql = `
+    SELECT SQL_CALC_FOUND_ROWS *
+    FROM coupons
+    LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
+    `;
 
     try {
-      const list = await app.mysql.select('coupons', {
-        limit: Number(pageSize),
-        offset: Number(pageSize) * (Number(current) - 1),
-      });
-      const total = list.length;
+      const list = await app.mysql.query(sql);
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -96,6 +99,24 @@ export default class CouponsServer extends Service {
       return { data: result };
     } catch (err) {
       ctx.logger.error(`========管理端：获取优惠券列表 CouponsServer.getList.\n Error: ${err}`);
+      return { code: 4000 };
+    }
+  }
+  /**
+   * @description 获取优惠券详情信息
+   * @param id 对应优惠券id
+   */
+  public async detail(id): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('coupons', { coupons_id: id });
+      if (!result) {
+        return { code: 2003 };
+      }
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取优惠券列表 CouponsServer.detail.\n Error: ${err}`);
       return { code: 4000 };
     }
   }

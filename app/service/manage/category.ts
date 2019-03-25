@@ -73,7 +73,8 @@ export default class CategoryServer extends Service {
     const { ctx, app } = this;
     const { current, pageSize, name } = condition;
     const sql = `
-    SELECT c.category_id,
+    SELECT SQL_CALC_FOUND_ROWS
+    c.category_id,
     c.category_name,
     c.category_state,
     c.category_is_delete,
@@ -85,7 +86,8 @@ export default class CategoryServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = list.length;
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -98,6 +100,24 @@ export default class CategoryServer extends Service {
       return { data: result };
     } catch (err) {
       ctx.logger.error(`========管理端：修改商品种类信息失败 CategoryServer.search.\n Error: ${err}`);
+      return { code: 4000 };
+    }
+  }
+  /**
+   * @description 获取商品种类详情信息
+   * @param id 对应的商品种类ID number类型
+   */
+  public async detail(id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('category', { category_id: id });
+      if (!result) {
+        return { code: 2003 };
+      }
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取商品详情失败 CategoryServer.detail.\n Error: ${err}`);
       return { code: 4000 };
     }
   }

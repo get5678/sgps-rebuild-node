@@ -77,7 +77,7 @@ export default class RiderServer extends Service {
     const { ctx, app } = this;
     const { name, building, pageSize, current } = condition;
     const sql = `
-    SELECT r.rider_id,
+    SELECT SQL_CALC_FOUND_ROWS r.rider_id,
     r.rider_name,
     r.rider_phone,
     r.rider_sex,
@@ -93,8 +93,9 @@ export default class RiderServer extends Service {
     `;
     try {
       const list = await app.mysql.query(sql);
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
       if (!list.length) return { code: 7000 };
-      const total = list.length;
+      const total = t[0].length;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -161,6 +162,24 @@ export default class RiderServer extends Service {
       return { data: result };
     } catch (err) {
       ctx.logger.error(`========管理端：获取骑手列表错误 RiderServer.getList.\n Error: ${err}`);
+      return { code: 4001 };
+    }
+  }
+  /**
+   * @description 获取详情
+   * @params id: 通过对应ID 获取详细信息
+   */
+  public async detai(id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('rider', { rider_id: id } );
+      if (!result) {
+        return { code: 2003 };
+      }
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取骑手详细信息错误 RiderServer.detail.\n Error: ${err}`);
       return { code: 4001 };
     }
   }

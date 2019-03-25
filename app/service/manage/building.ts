@@ -15,13 +15,16 @@ export default class BuildingServer extends Service {
   public async getList(condition: Condition): Promise<Code> {
     const { app, ctx } = this;
     const { pageSize, current } = condition;
+    const sql = `
+    SELECT SQL_CALC_FOUND_ROWS *
+    FROM building
+    LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
+    `;
 
     try {
-      const list = await app.mysql.select('building', {
-        limit: Number(pageSize),
-        offset: Number(pageSize) * (Number(current) - 1),
-      });
-      const total = list.length;
+      const list = await app.mysql.query(sql);
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }

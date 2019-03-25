@@ -16,14 +16,16 @@ export default class OrderServer extends Service {
     const { ctx, app } = this;
     const { pageSize, current, type } = order;
     const sql = `
-    SELECT * FROM ${'`order`'}
-    ${type ? 'WHERE order.order_state = ' + type : ''}
+    SELECT SQL_CALC_FOUND_ROWS *
+    FROM t_order as o
+    ${type ? 'WHERE o.order_state = ' + type : ''}
     LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
     `;
-    
+
     try {
       const list = await app.mysql.query(sql);
-      const total = list.length;
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }

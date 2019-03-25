@@ -21,7 +21,15 @@ export default (appInfo: EggAppInfo) => {
 
   // add your egg config in here
   config.middleware = [ 'errorHandler', 'requestLogger' ];
-
+  // cos
+  config.cos = {
+    client: {
+      secretId: 'AKIDqCVUNKH01iHjgrqhKwOm5qTiKZj1s8xn',
+      secretKey: 'tTFzqhWEWt8C8tYBjdOBrpjSBqU8GH8Q',
+      bucket : 'image-1255939184',
+      region : 'ap-chongqing',
+    },
+  };
   // 配置mysql
   config.mysql = {
     client: {

@@ -15,7 +15,7 @@ export default class UserServer extends Service {
   public async getList(listInfo: List): Promise<Code> {
     const { ctx, app } = this;
     const sql = `
-    SELECT
+    SELECT SQL_CALC_FOUND_ROWS
     u.user_id,
     u.user_name,
     u.user_phone,
@@ -32,7 +32,8 @@ export default class UserServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = list.length;
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = t[0].total;
       if (Number(listInfo.pageSize) * (Number(listInfo.current) - 1) > total) {
         return { code: 7001 };
       }

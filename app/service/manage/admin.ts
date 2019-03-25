@@ -200,7 +200,7 @@ export default class AdminServer extends Service {
     const { ctx, app } = this;
     const { pageSize, current } = listInfo;
     const sql = `
-    SELECT * FROM admin
+    SELECT SQL_CALC_FOUND_ROWS * FROM admin
     WHERE admin_state = 0
     LIMIT ${Number(pageSize)}
     OFFSET ${Number(pageSize) * (Number(current) - 1)};
@@ -211,7 +211,8 @@ export default class AdminServer extends Service {
       for (const item of list) {
         item.admin_password = '******';
       }
-      const total = list.length;
+      const tt = await app.mysql.query('SELECT FOUND_ROWS() AS total');
+      const total = tt[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -229,6 +230,25 @@ export default class AdminServer extends Service {
       return result;
     } catch (err) {
       ctx.logger.error(`========管理端：管理人员待审核名单获取错误 AdminServer.logout.\n Error: ${err}`);
+      return { code: -1 };
+    }
+  }
+  /**
+   * @description 获取管理员详细信息
+   * @param id 管理员ID
+   */
+  public async detail(id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.get('admin', { admin_id: id });
+      if (!result) {
+        return { code: 2003 };
+      }
+      result.admin_password = '******';
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========管理端：获取管理员信息错误 AdminServer.detail.\n Error: ${err}`);
       return { code: -1 };
     }
   }

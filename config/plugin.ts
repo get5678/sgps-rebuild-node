@@ -18,6 +18,10 @@ const plugin: EggPlugin = {
     enable: true,
     package: 'egg-redis',
   },
+  cos: {
+    enable: true,
+    package: 'egg-cos',
+  },
 };
 
 export default plugin;

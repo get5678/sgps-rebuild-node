@@ -35,6 +35,10 @@ const ExamineInfo = {
   state: 'number',
 };
 
+const DetailInfo = {
+  id: 'number?',
+};
+
 export default class AdminController extends BaseController {
   /**
    * @description 管理端用户注册
@@ -136,6 +140,25 @@ export default class AdminController extends BaseController {
       this.success(result.data);
     } catch (err) {
       ctx.logger.error(`========管理端：管理人员待审核管理错误 AdminController.examine \n error: ${err}`);
+      this.error({ code: -1 });
+    }
+  }
+  /**
+   * @description GET请求 获取管理人员详细信息
+   */
+  public async detail() {
+    const { ctx } = this;
+    const { id } = ctx.query;
+
+    try {
+      ctx.validate(DetailInfo);
+      const result = await ctx.service.manage.admin.detail(id);
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      ctx.logger.error(`========管理端：管理人员详情获取错误 AdminController.detail \n error: ${err}`);
       this.error({ code: -1 });
     }
   }

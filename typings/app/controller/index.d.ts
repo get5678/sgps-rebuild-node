@@ -6,6 +6,8 @@ import ExportBaseController from '../../../app/controller/BaseController';
 import ExportHome from '../../../app/controller/home';
 import ExportCustomAddress from '../../../app/controller/custom/address';
 import ExportCustomBanner from '../../../app/controller/custom/banner';
+import ExportCustomComment from '../../../app/controller/custom/comment';
+import ExportCustomCoupons from '../../../app/controller/custom/coupons';
 import ExportCustomGetIndexList from '../../../app/controller/custom/getIndexList';
 import ExportCustomOrder from '../../../app/controller/custom/order';
 import ExportCustomProduct from '../../../app/controller/custom/product';
@@ -28,6 +30,8 @@ declare module 'egg' {
     custom: {
       address: ExportCustomAddress;
       banner: ExportCustomBanner;
+      comment: ExportCustomComment;
+      coupons: ExportCustomCoupons;
       getIndexList: ExportCustomGetIndexList;
       order: ExportCustomOrder;
       product: ExportCustomProduct;

@@ -5,6 +5,8 @@ import 'egg';
 import ExportTest from '../../../app/service/Test';
 import ExportCustomAddress from '../../../app/service/custom/address';
 import ExportCustomBanner from '../../../app/service/custom/banner';
+import ExportCustomComment from '../../../app/service/custom/comment';
+import ExportCustomCoupons from '../../../app/service/custom/coupons';
 import ExportCustomGetIndexList from '../../../app/service/custom/getIndexList';
 import ExportCustomOrder from '../../../app/service/custom/order';
 import ExportCustomProduct from '../../../app/service/custom/product';
@@ -26,6 +28,8 @@ declare module 'egg' {
     custom: {
       address: ExportCustomAddress;
       banner: ExportCustomBanner;
+      comment: ExportCustomComment;
+      coupons: ExportCustomCoupons;
       getIndexList: ExportCustomGetIndexList;
       order: ExportCustomOrder;
       product: ExportCustomProduct;

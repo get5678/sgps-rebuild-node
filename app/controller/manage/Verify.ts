@@ -5,7 +5,7 @@
 import BaseController from '../BaseController';
 
 const CaptchaInfo = {
-  type: 'number?',
+  type: 'string?',
   phone: 'string?',
 };
 
@@ -16,7 +16,7 @@ export default class VerifyController extends BaseController {
     const { type, phone } = ctx.query;
 
     try {
-      ctx.validate(CaptchaInfo);
+      ctx.validate(CaptchaInfo, ctx.query);
       const result = await ctx.service.manage.verify.getCaptcha({ type, phone });
       if (result && result.code) return this.error({ code: result.code });
       this.success(result.data);

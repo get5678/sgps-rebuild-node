@@ -4,43 +4,12 @@
  */
 
 import { Service } from 'egg';
-import { concatGenerator, jsonParse } from '../../utils/sqlUtils';
-
-const concatSql = concatGenerator([
-  {
-  name: 'product_id',
-  key: 'p.product_id',
-  },
-  {
-    name: 'product_name',
-    key: 'p.product_name',
-    isString: true,
-  },
-  {
-  name: 'product_price',
-  key: 'p.product_price',
-  },
-  {
-  name: 'product_description',
-  key: 'p.product_description',
-  isString: true,
-  },
-  {
-  name: 'product_unit',
-  key: 'p.product_unit',
-  isString: true,
-  },
-  {
-    name: 'product_img',
-    key: 'p.product_img',
-    isString: true,
-}]);
 
 export interface List {
   pageSize?: number;
   current?: number;
   name?: string;
-  category_id?: number | string;
+  category_id: number;
 }
 
 export interface Code {
@@ -58,25 +27,31 @@ export default class MppProductServer extends Service {
     const { pageSize, current, category_id } = list;
 
     const sql = `
-    SELECT
-      c.category_name,
-      CONCAT('[', GROUP_CONCAT(CONCAT(${concatSql})), ']') AS product
+    SELECT SQL_CALC_FOUND_ROWS
+      p.product_id,
+      p.product_name,
+      p.product_price,
+      p.product_description
     FROM
       product_category pc
       LEFT OUTER JOIN category c ON pc.pc_category_id = c.category_id
       LEFT OUTER JOIN product p ON p.product_id = pc.pc_product_id
     WHERE
       c.category_id LIKE ?
-    GROUP BY c.category_name;
+      AND p.product_state = 1;
     `;
     const where = [
-      category_id || '%',
+      category_id,
     ];
 
     try {
-      let list = await app.mysql.query(sql, where);
-      list = jsonParse(list, 'product');
-      const total = list.length;
+      const species = await app.mysql.select('category', {
+        where: { category_id },
+        columns: [ 'category_name' ],
+      });
+      const list = await app.mysql.query(sql, where);
+      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const total = totalData[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -84,6 +59,7 @@ export default class MppProductServer extends Service {
         pageSize,
         current,
         total,
+        species,
         list,
       };
       return { data: result };
@@ -101,7 +77,7 @@ export default class MppProductServer extends Service {
     const { ctx, app } = this;
     name = name + '%';
     const sql = `
-    SELECT
+    SELECT SQL_CALC_FOUND_ROWS
       p.product_id,
       p.product_name,
       p.product_price,
@@ -111,12 +87,14 @@ export default class MppProductServer extends Service {
     FROM
       product p
     WHERE
-      p.product_name LIKE ?;
+      p.product_name LIKE ?
+      AND p.product_state = 1;
     `;
 
     try {
       const list = await app.mysql.query(sql, [ name ]);
-      const total = list.length;
+      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const total = totalData[0].total;
       const result = {
         total,
         list,
@@ -124,6 +102,41 @@ export default class MppProductServer extends Service {
       return { data: result };
     } catch (err) {
       ctx.logger.error(`========小程序：搜索商品列表错误 MppProductServer.search.\n Error: ${err}`);
+      return { code: 1000 };
+    }
+  }
+  /**
+   * @description 小程序获得商品种类
+   */
+  public async getSpecies(): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.select('category', {
+        where: { category_state: 1 },
+        columns: [ 'category_id', 'category_name' ],
+      });
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========小程序：搜索商品列表错误 MppProductServer.getSpecies.\n Error: ${err}`);
+      return { code: 1000 };
+    }
+  }
+  /**
+   * @description 获取商品详情
+   * @param product_id 商品ID
+   */
+  public async getDetail(product_id: number): Promise<Code> {
+    const { ctx, app } = this;
+
+    try {
+      const result = await app.mysql.select('product', {
+        where: { product_id },
+        columns: [ 'product_id', 'product_name', 'product_price', 'product_description', 'product_unit', 'product_img' ],
+      });
+      return { data: result };
+    } catch (err) {
+      ctx.logger.error(`========小程序：获取商品详情 MppProductServer.getDetail.\n Error: ${err}`);
       return { code: 1000 };
     }
   }

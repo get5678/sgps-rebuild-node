@@ -5,8 +5,8 @@
 import BaseController from '../BaseController';
 
 const GetListInfo = {
-  pageSize: 'number?',
-  current: 'number?',
+  pageSize: 'string',
+  current: 'string',
 };
 
 export default class GetIndexListController extends BaseController {
@@ -19,7 +19,7 @@ export default class GetIndexListController extends BaseController {
     const { pageSize = 5, current = 1 } = ctx.query;
 
     try {
-      ctx.validate(GetListInfo);
+      ctx.validate(GetListInfo, ctx.query);
       const result = await ctx.service.custom.getIndexList.getList({ pageSize, current });
       if (result && result.code) {
         return this.error({ code: result.code });

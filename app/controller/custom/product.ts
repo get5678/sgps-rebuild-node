@@ -5,9 +5,9 @@
 import BaseController from '../BaseController';
 
 const GetListInfo = {
-  pageSize: 'number?',
-  current: 'number?',
-  category_id: 'number?',
+  pageSize: 'string?',
+  current: 'string?',
+  category_id: 'string?',
   name: 'string?',
 };
 
@@ -18,7 +18,7 @@ export default class MppProductController extends BaseController {
    */
   public async getList() {
     const { ctx, logger } = this;
-    const { pageSize = 5, current = 1, category_id, name } = ctx.query;
+    const { pageSize, current, category_id, name } = ctx.query;
     if (name) {
       return this.search();
     }
@@ -58,6 +58,46 @@ export default class MppProductController extends BaseController {
       this.error({
         code: err.code === 'invalid_param' ?
           4000 : 1000,
+      });
+    }
+  }
+  /**
+   * @description 小程序获得商品种类
+   */
+  public async getSpecies() {
+    const { ctx, logger } = this;
+
+    try {
+      const result = await ctx.service.custom.product.getSpecies();
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      logger.error(`========小程序：获得商品种类表错误 MppProductController.getSpecies.\n Error: ${err}`);
+      this.error({
+        code: 1000,
+      });
+    }
+  }
+  /**
+   * @description 获取商品详情
+   * @param product_id 商品ID
+   */
+  public async getDetail() {
+    const { ctx, logger } = this;
+    const { product_id } = ctx.query;
+
+    try {
+      const result = await ctx.service.custom.product.getDetail(product_id);
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      logger.error(`========小程序：获取商品详情 MppProductController.getDetail.\n Error: ${err}`);
+      this.error({
+        code: 1000,
       });
     }
   }

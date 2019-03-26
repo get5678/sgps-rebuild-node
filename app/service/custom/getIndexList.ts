@@ -24,7 +24,8 @@ export default class GetIndexListService extends Service {
     const { ctx, app } = this;
     const { pageSize, current } = list;
     const sql = `
-    SELECT p.*,
+    SELECT SQL_CALC_FOUND_ROWS
+    p.*,
     c.category_name
     FROM product as p LEFT OUTER JOIN category as c
     ON c.category_id = p.product_category_id
@@ -33,7 +34,8 @@ export default class GetIndexListService extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const total = list.length;
+      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const total = totalData[0].total;
       const result = {
         pageSize,
         current,

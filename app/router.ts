@@ -24,8 +24,17 @@ export default (app: Application) => {
   // 商品接口
   router.get('/api/custom/index/product', controller.custom.getIndexList.getList); // 获取首页商品
   router.get('/api/custom/product', controller.custom.product.getList); // 获取商品
+  router.get('/api/custom/product/species', controller.custom.product.getSpecies); // 获取商品种类
+  router.get('/api/custom/product/detail', controller.custom.product.getDetail); // 获取商品详情
   // 订单接口
   router.get('/api/custom/order', controller.custom.order.getList); // 获取订单
+  router.get('/api/custom/order/detail', controller.custom.order.getOrderDetail); // 获取订单详情
+  // 优惠券接口
+  router.get('/api/custom/coupons', controller.custom.coupons.getList); // 获取优惠券列表
+  // 评论接口
+  router.get('/api/custom/comment/product', controller.custom.comment.getList); // 获取商品评论
+  router.get('/api/custom/comment/order', controller.custom.comment.order); // 获取订单评论
+  router.post('/api/custom/comment', controller.custom.comment.post); // 上传评论
 
   /**
    * @description 管理端接口

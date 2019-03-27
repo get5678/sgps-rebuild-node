@@ -93,7 +93,7 @@ export default class ProductServer extends Service {
 
     try {
       const list = await app.mysql.query(sql);
-      const t = await app.mysql.query('SELECT FOUND_ROWS AS total');
+      const t = await app.mysql.query('SELECT FOUND_ROWS() AS total');
       const total = t[0].total;
       const result = {
         pageSize,

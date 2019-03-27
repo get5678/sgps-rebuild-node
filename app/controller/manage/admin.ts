@@ -14,6 +14,7 @@ const RegisteInfo = {
   ...LoginInfo,
   identity: 'number',
   name: 'string',
+  code: 'string',
 };
 
 const UpdateInfo = {

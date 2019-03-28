@@ -87,4 +87,85 @@ export default class MppOrderController extends BaseController {
       });
     }
   }
+  /**
+   * @description 小程序创建订单
+   */
+  public async createOrder() {
+    const { ctx, logger } = this;
+    const {
+      order_product,
+      order_send_time,
+      order_total_price,
+      order_address_id,
+      order_coupons_code,
+    } = ctx.request.body;
+
+    const createRule = {
+      order_product: 'array',
+      order_send_time: 'string',
+      order_total_price: 'number',
+      order_address_id: 'number',
+      order_coupons_code: 'number',
+    };
+
+    // 从redis中获取信息
+    // const sessionId = ctx.get('Cookie');
+    // const userInfo = await this.app.redis.get(sessionId);
+    // const { user_id, openId } = JSON.parse(userInfo);
+
+    try {
+      ctx.validate(createRule, ctx.request.body);
+      const result = await ctx.service.custom.order.createOrder({
+        order_product,
+        order_send_time,
+        order_total_price,
+        order_address_id,
+        order_coupons_code,
+        // user_id,
+        // openId,
+        userId: 27,
+        openId: 'oghf-4-t7rbY8RHW5hkPNPMi5L0Q',
+      });
+      if (result && result.code) {
+        return this.error({ code: result.code });
+      }
+      return this.success(result.data);
+    } catch (err) {
+      logger.error(`========小程序：小程序创建订单 MppOrderController.createOrder.\n Error: ${err}`);
+      this.error({
+        code: err.code === 'invalid_param' ?
+          4000 : 1000,
+      });
+    }
+  }
+  /**
+   * @description 小程序支付回调
+   */
+  public async payCallBack() {
+    console.log('支付回调！！！');
+    const { ctx, logger } = this;
+    // 是否有安全问题
+    const { result_code, out_trade_no, attach } = ctx.request.body;
+    let payResult: any = {};
+
+    try {
+      if (result_code === 'SUCCESS') {
+        payResult = await ctx.service.order.payCallBack.option({
+          id: attach.split(',')[0],
+          orderId: out_trade_no,
+        });
+        if (payResult.errorMsg) {
+          this.error({
+            msg: payResult.errorMsg,
+          });
+        } else {
+          ctx.body = payResult.xml;
+        }
+      } else {
+        logger.error(`======payCallBack 支付失败 result_code:${result_code}, out_trade_no:${out_trade_no}, attach:${attach}`);
+      }
+    } catch (error) {
+      logger.error(`=============payCallBack result_code:${result_code},out_trade_no:${out_trade_no}, attach:${attach}`, error);
+    }
+  }
 }

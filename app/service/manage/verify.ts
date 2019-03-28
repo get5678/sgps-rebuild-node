@@ -13,6 +13,9 @@ export default class VerifyService extends Service {
     const { ctx } = this;
 
     try {
+      if (!data.phone) {
+        return { code: 4001 };
+      }
       const captcha = svgCaptcha.create();
       if (Number(data.type) === 0) {
         ctx.session[String('login' + data.phone)] = captcha.text.toLowerCase();

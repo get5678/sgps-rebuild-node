@@ -30,7 +30,7 @@ export default (app: Application) => {
   router.get('/api/custom/order', controller.custom.order.getList); // 获取订单
   router.get('/api/custom/order/detail', controller.custom.order.getOrderDetail); // 获取订单详情
   // 优惠券接口
-  router.get('/api/custom/coupons', controller.custom.coupons.getList); // 获取优惠券列表
+  router.get('/api/custom/coupons/getList', controller.custom.coupons.getList); // 获取优惠券列表
   // 评论接口
   router.get('/api/custom/comment/product', controller.custom.comment.getList); // 获取商品评论
   router.get('/api/custom/comment/order', controller.custom.comment.order); // 获取订单评论

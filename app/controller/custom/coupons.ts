@@ -5,9 +5,9 @@
 import BaseController from '../BaseController';
 
 const GetListInfo = {
-  pageSize: 'string',
-  current: 'string',
-  userId: 'string',
+  pageSize: 'string?',
+  current: 'string?',
+  userId: 'string?',
 };
 
 export default class MppCouponsController extends BaseController {
@@ -17,7 +17,7 @@ export default class MppCouponsController extends BaseController {
    */
   public async getList() {
     const { ctx, logger } = this;
-    const { pageSize, current, userId } = ctx.query;
+    const { pageSize = 5, current = 1, userId } = ctx.query;
 
     try {
       ctx.validate(GetListInfo);

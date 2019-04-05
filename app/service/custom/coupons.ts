@@ -25,7 +25,7 @@ export default class MppCouponsServer extends Service {
         c.coupons_type,
         c.coupons_discount,
         c.coupons_fill,
-        c.coupons_price,
+        c.coupons_minus,
         c.coupons_state,
         cu.cu_code
       FROM

@@ -27,13 +27,13 @@ const LogoutInfo = {
 };
 
 const ListInfo = {
-  pageSize: 'number?',
-  pageNum: 'number?',
+  pageSize: 'string?',
+  pageNum: 'string?',
 };
 
 const ExamineInfo = {
-  id: 'number',
-  state: 'number',
+  id: 'string',
+  state: 'string',
 };
 
 const DetailInfo = {
@@ -82,6 +82,7 @@ export default class AdminController extends BaseController {
 
   public async login() {
     const { ctx } = this;
+
     try {
       ctx.validate(LoginInfo);
       const result = await ctx.service.manage.admin.login(ctx.request.body);
@@ -133,7 +134,7 @@ export default class AdminController extends BaseController {
     const { ctx } = this;
 
     try {
-      ctx.validate(ExamineInfo);
+      ctx.validate(ExamineInfo, ctx.request.body);
       const result = await ctx.service.manage.admin.examine(ctx.request.body);
       if (result && result.code) {
         return this.error({ code: result.code });

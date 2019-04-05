@@ -5,8 +5,8 @@
 import BaseController from '../BaseController';
 
 const GetListInfo = {
-  pageSize: 'string',
-  current: 'string',
+  pageSize: 'string?',
+  current: 'string?',
   userId: 'string',
   state: 'string?',
 };
@@ -23,7 +23,7 @@ export default class MppOrderController extends BaseController {
    */
   public async getList() {
     const { ctx, logger } = this;
-    const { pageSize, current, state, userId } = ctx.query;
+    const { pageSize = 5, current = 1, state = 0, userId } = ctx.query;
 
     try {
       ctx.validate(GetListInfo, ctx.query);

@@ -8,8 +8,8 @@ import { concatGenerator, jsonParse } from '../../utils/sqlUtils';
 
 const concatSql = concatGenerator([
   {
-  name: 'op_id',
-  key: 'op.op_order_id',
+    name: 'op_id',
+    key: 'op.op_order_id',
   },
   {
     name: 'op_name',
@@ -17,21 +17,22 @@ const concatSql = concatGenerator([
     isString: true,
   },
   {
-  name: 'op_number',
-  key: 'op.op_number',
+    name: 'op_number',
+    key: 'op.op_number',
   },
   {
-  name: 'op_price',
-  key: 'op.op_price',
+    name: 'op_price',
+    key: 'op.op_price',
   },
   {
-  name: 'op_picture',
-  key: 'op.op_picture',
+    name: 'op_picture',
+    key: 'op.op_picture',
+    isString: true,
   },
   {
-  name: 'op_unit',
-  key: 'op.op_unit',
-  isString: true,
+    name: 'op_unit',
+    key: 'op.op_unit',
+    isString: true,
 }]);
 
 export interface OrderList {
@@ -80,9 +81,13 @@ export default class MppOrderServer extends Service {
     ];
 
     try {
+      console.log('@@@@');
       let list = await app.mysql.query(sql, where);
+      console.log('@@@@@');
       list = jsonParse(list, 'order_product');
+      console.log('@');
       const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      console.log('@@');
       const total = totalData[0].total;
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };

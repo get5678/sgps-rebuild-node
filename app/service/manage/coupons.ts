@@ -22,7 +22,7 @@ export default class CouponsServer extends Service {
         coupons_type: type,
         coupons_discount: discount || 10,
         coupons_fill: fill || 0,
-        coupons_price: price || 0,
+        coupons_minus: price || 0,
         coupons_limited_time: limited_time,
         coupons_state: state || 1,
         coupons_create_time: app.mysql.literals.now,
@@ -56,7 +56,7 @@ export default class CouponsServer extends Service {
         coupons_type: type || coupons.coupons_type,
         coupons_discount: discount || coupons.coupons_discount,
         coupons_fill: fill || coupons.coupons_fill,
-        coupons_price: price || coupons.coupons_price,
+        coupons_minus: price || coupons.coupons_price,
         coupons_limited_time: limited_time || coupons.coupons_limited_time,
         coupons_state: state || coupons.coupons_state,
       };

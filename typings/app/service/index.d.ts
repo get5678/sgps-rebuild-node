@@ -8,6 +8,8 @@ import ExportCustomComment from '../../../app/service/custom/comment';
 import ExportCustomCoupons from '../../../app/service/custom/coupons';
 import ExportCustomGetIndexList from '../../../app/service/custom/getIndexList';
 import ExportCustomOrder from '../../../app/service/custom/order';
+import ExportCustomPay from '../../../app/service/custom/pay';
+import ExportCustomPayCallBack from '../../../app/service/custom/payCallBack';
 import ExportCustomProduct from '../../../app/service/custom/product';
 import ExportManageAdmin from '../../../app/service/manage/admin';
 import ExportManageBuilding from '../../../app/service/manage/building';
@@ -18,6 +20,7 @@ import ExportManageProduct from '../../../app/service/manage/product';
 import ExportManageRider from '../../../app/service/manage/rider';
 import ExportManageUser from '../../../app/service/manage/user';
 import ExportManageVerify from '../../../app/service/manage/verify';
+import ExportRiderRider from '../../../app/service/rider/rider';
 import ExportUserLogin from '../../../app/service/user/login';
 import ExportUserPhone from '../../../app/service/user/phone';
 
@@ -30,6 +33,8 @@ declare module 'egg' {
       coupons: ExportCustomCoupons;
       getIndexList: ExportCustomGetIndexList;
       order: ExportCustomOrder;
+      pay: ExportCustomPay;
+      payCallBack: ExportCustomPayCallBack;
       product: ExportCustomProduct;
     }
     manage: {
@@ -42,6 +47,9 @@ declare module 'egg' {
       rider: ExportManageRider;
       user: ExportManageUser;
       verify: ExportManageVerify;
+    }
+    rider: {
+      rider: ExportRiderRider;
     }
     user: {
       login: ExportUserLogin;

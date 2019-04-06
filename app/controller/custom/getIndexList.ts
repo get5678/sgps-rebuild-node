@@ -5,8 +5,8 @@
 import BaseController from '../BaseController';
 
 const GetListInfo = {
-  pageSize: 'string',
-  current: 'string',
+  pageSize: 'string?',
+  current: 'string?',
 };
 
 export default class GetIndexListController extends BaseController {

@@ -9,13 +9,8 @@ import * as uuidV1 from 'uuid/v1';
 
 const concatSql = concatGenerator([
   {
-<<<<<<< HEAD
-    name: 'op_id',
-    key: 'op.op_order_id',
-=======
   name: 'op_id',
   key: 'op.op_id',
->>>>>>> 3cc2745c1d6773fab79bf967f09a4753545271e9
   },
   {
     name: 'op_name',
@@ -71,7 +66,7 @@ export interface Order {
   order_send_time: string;
   order_total_price: number;
   order_address_id: number;
-  order_coupons_code?: number;
+  order_coupons_code?: number | string;
   order_message?: string;
   openId: string;
 }
@@ -228,14 +223,14 @@ export default class MppOrderServer extends Service {
       let finalPrice = order_total_price;
       let order_coupons_id: number;
       // 若优惠券为空，则优惠券码为0
-      if (order_coupons_code !== 0) {
+      if (order_coupons_code !== 0 && order_coupons_code !== '' && order_coupons_code !== undefined) {
         // 根据优惠码找用户优惠券信息
-        const coupons = await this.app.mysql.select('coupons_user', {
+        const coupons = await conn.mysql.select('coupons_user', {
           where: { cu_code: order_coupons_code },
         });
         // 根据优惠券种类找优惠券减免信息
         order_coupons_id = Number(coupons.map((item: { cu_coupons_id: number; }) => item.cu_coupons_id));
-        const post = await this.app.mysql.select('coupons', {
+        const post = await conn.select('coupons', {
           where: { coupons_id: order_coupons_id },
         });
         const type = Number(post.map((item: { coupons_type: number; }) => item.coupons_type)); // 0折扣，1满减
@@ -259,16 +254,16 @@ export default class MppOrderServer extends Service {
       }
       // 获取商品信息,并把商品信息存入对象
       for (const item of order_product) {
-        const productInfo = await app.mysql.select('product', {
+        const productInfo = await conn.select('product', {
           where: { product_id: item.product_id },
           columns: [ 'product_price', 'product_unit', 'product_name', 'product_img' ],
         });
         Object.assign(item, productInfo[0]);
       }
       // 获取地址信息
-      const addressInfo = await app.mysql.get('address', { address_id: order_address_id }); // 查询地址信息
+      const addressInfo = await conn.get('address', { address_id: order_address_id }); // 查询地址信息
       const buildingId = addressInfo.address_building_id; // 获取楼栋ID
-      const building = await app.mysql.get('building', { building_id: buildingId }); // 查询楼栋
+      const building = await conn.get('building', { building_id: buildingId }); // 查询楼栋
       const buildingName = building.building_name; // 获取楼栋名
       const roomId = addressInfo.address_room; // 获取寝室名
       const address = buildingName + ' ' + roomId; // 拼接地址，如"6号(知行苑1舍) 410"
@@ -290,7 +285,7 @@ export default class MppOrderServer extends Service {
       console.log('@@@@@@', orderInfo);
       // 插入数据库
       // 订单表创建新的记录
-      const creatResult = await app.mysql.insert('t_order', orderInfo);
+      const creatResult = await conn.insert('t_order', orderInfo);
       const insertId = creatResult.insertId;
       // order_product表增加相应记录
       // 记录成功数据
@@ -305,13 +300,13 @@ export default class MppOrderServer extends Service {
           op_unit: item.product_unit,
           op_picture: item.product_img,
         };
-        const insertResult = await app.mysql.insert('order_product', opInfo);
+        const insertResult = await conn.insert('order_product', opInfo);
         insertResultArr.push(insertResult);
       }
       // 提交事务
       await conn.commit();
       // 统一下单接口
-      const pay = await this.service.order.pay.create({ ...orderInfo, finalPrice, openId, insertId: creatResult.insertId });
+      const pay = await this.service.custom.pay.create({ ...orderInfo, finalPrice, openId, insertId: creatResult.insertId });
       const result = {
         ...pay,
         openId,

@@ -98,6 +98,8 @@ export default class MppOrderController extends BaseController {
       order_total_price,
       order_address_id,
       order_coupons_code,
+      order_message,
+      // sessionId
     } = ctx.request.body;
 
     const createRule = {
@@ -105,7 +107,9 @@ export default class MppOrderController extends BaseController {
       order_send_time: 'string',
       order_total_price: 'number',
       order_address_id: 'number',
-      order_coupons_code: 'number',
+      order_coupons_code: 'number?',
+      order_message: 'string?',
+      // sessionId: 'string',
     };
 
     // 从redis中获取信息
@@ -121,6 +125,7 @@ export default class MppOrderController extends BaseController {
         order_total_price,
         order_address_id,
         order_coupons_code,
+        order_message,
         // user_id,
         // openId,
         userId: 27,

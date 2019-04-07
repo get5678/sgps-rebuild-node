@@ -22,10 +22,10 @@ export default class UserServer extends Service {
     u.user_sex,
     u.user_create_time,
     b.building_name
-    FROM user as u LEFT JOIN adresss as a
-    ON u.user_id = a.adress_user_id
+    FROM user as u LEFT JOIN address as a
+    ON u.user_id = a.address_user_id
     LEFT JOIN building as b
-    ON b.building_id = a.adress_building_id
+    ON b.building_id = a.address_building_id
     LIMIT ${Number(listInfo.pageSize)}
     OFFSET ${Number(listInfo.pageSize) * (Number(listInfo.current) - 1)};
     `;
@@ -103,10 +103,10 @@ export default class UserServer extends Service {
     u.user_sex,
     u.user_create_time,
     b.building_name
-    FROM user as u LEFT JOIN adresss as a
-    ON u.user_id = a.adress_user_id
+    FROM user as u LEFT JOIN address as a
+    ON u.user_id = a.address_user_id
     LEFT JOIN building as b
-    ON b.building_id = a.adress_building_id
+    ON b.building_id = a.address_building_id
     ${search.building ? 'WHERE b.building_id  LIKE ' + '\'%' + search.building + '%\'' : ''}
     ${(search.building && search.name) ? 'AND u.user_name LIKE ' + '\'%' + search.name + '%\'' : ''}
     ${(!search.building && search.name) ? 'WHERE u.user_name LIKE ' + '\'%' + search.name + '%\'' : ''}

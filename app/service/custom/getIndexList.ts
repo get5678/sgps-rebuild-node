@@ -6,8 +6,8 @@
 import { Service } from 'egg';
 
 export interface List {
-  pageSize?: number;
-  current?: number;
+  pageSize: number;
+  current: number;
 }
 
 export interface Code {
@@ -32,10 +32,14 @@ export default class GetIndexListService extends Service {
     LIMIT ${Number(pageSize)} OFFSET ${Number(pageSize) * (Number(current) - 1)};
     `;
 
+    // 创建事务
+    const conn = await app.mysql.beginTransaction();
+
     try {
-      const list = await app.mysql.query(sql);
-      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const list = await conn.query(sql);
+      const totalData = await conn.query('SELECT FOUND_ROWS() AS total;');
       const total = totalData[0].total;
+      await conn.commit();
       const result = {
         pageSize,
         current,
@@ -44,6 +48,7 @@ export default class GetIndexListService extends Service {
       };
       return { data: result };
     } catch (err) {
+      await conn.rollback();
       ctx.logger.error(`========小程序：获取首页商品列表错误 GetIndexListService.getList.\n Error: ${err}`);
       return { code: 1000 };
     }

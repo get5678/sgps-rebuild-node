@@ -26,12 +26,16 @@ export default class MppProductServer extends Service {
     const { ctx, app } = this;
     const { pageSize, current, category_id } = list;
 
+    const conn = await app.mysql.beginTransaction(); // 初始化事务
+
     const sql = `
     SELECT SQL_CALC_FOUND_ROWS
       p.product_id,
       p.product_name,
       p.product_price,
-      p.product_description
+      p.product_description,
+      p.product_unit,
+      p.product_img
     FROM
       product_category pc
       LEFT OUTER JOIN category c ON pc.pc_category_id = c.category_id
@@ -45,13 +49,16 @@ export default class MppProductServer extends Service {
     ];
 
     try {
-      const species = await app.mysql.select('category', {
+      const species = await conn.select('category', {
         where: { category_id },
         columns: [ 'category_name' ],
       });
-      const list = await app.mysql.query(sql, where);
-      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const list = await conn.query(sql, where);
+      const totalData = await conn.query('SELECT FOUND_ROWS() AS total;');
       const total = totalData[0].total;
+
+      await conn.commit();
+
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -64,6 +71,7 @@ export default class MppProductServer extends Service {
       };
       return { data: result };
     } catch (err) {
+      await conn.rollback();
       ctx.logger.error(`========小程序：获取商品列表错误 MppProductServer.getList.\n Error: ${err}`);
       return { code: 1000 };
     }
@@ -91,16 +99,22 @@ export default class MppProductServer extends Service {
       AND p.product_state = 1;
     `;
 
+    const conn = await app.mysql.beginTransaction(); // 初始化事务
+
     try {
-      const list = await app.mysql.query(sql, [ name ]);
-      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const list = await conn.query(sql, [ name ]);
+      const totalData = await conn.query('SELECT FOUND_ROWS() AS total;');
       const total = totalData[0].total;
+
+      await conn.commit();
+
       const result = {
         total,
         list,
       };
       return { data: result };
     } catch (err) {
+      await conn.rollback();
       ctx.logger.error(`========小程序：搜索商品列表错误 MppProductServer.search.\n Error: ${err}`);
       return { code: 1000 };
     }

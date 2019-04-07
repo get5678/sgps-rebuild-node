@@ -24,6 +24,7 @@ const concatSql = concatGenerator([
   {
   name: 'op_picture',
   key: 'op.op_picture',
+  isString: true,
   },
   {
   name: 'op_unit',
@@ -46,6 +47,7 @@ export interface OrderList {
 export interface ModifyInfo {
   riderId: number;
   orderId: number;
+  state: number;
 }
 
 export default class RiderService extends Service {
@@ -78,11 +80,16 @@ export default class RiderService extends Service {
       state || '%',
     ];
 
+    const conn = await app.mysql.beginTransaction(); // 初始化事务
+
     try {
-      let list = await app.mysql.query(sql, where);
+      let list = await conn.query(sql, where);
       list = jsonParse(list, 'order_product');
-      const totalData = await app.mysql.query('SELECT FOUND_ROWS() AS total;');
+      const totalData = await conn.query('SELECT FOUND_ROWS() AS total;');
       const total = totalData[0].total;
+
+      await conn.commit();
+
       if (Number(pageSize) * (Number(current) - 1) > total) {
         return { code: 7001 };
       }
@@ -94,6 +101,7 @@ export default class RiderService extends Service {
       };
       return { data: result };
     } catch (err) {
+      await conn.rollback();
       ctx.logger.error(`========小程序：获取骑手订单 RiderService.getList.\n Error: ${err}`);
       return { code: 1000 };
     }
@@ -104,7 +112,7 @@ export default class RiderService extends Service {
    */
   public async ModOrder(info: ModifyInfo) {
     const { ctx, app } = this;
-    const { riderId, orderId } = info;
+    const { riderId, orderId, state } = info;
 
     try {
       const list = await app.mysql.select('t_order', {
@@ -114,10 +122,10 @@ export default class RiderService extends Service {
         },
         columns: [ 'order_state' ],
       });
-      const state = list[0].order_state;
-      if (state) {
-        const result = await this.app.mysql.update('t_order', {
-          order_state: 4,
+      const orderState = list[0].order_state;
+      if (orderState) {
+        const result = await app.mysql.update('t_order', {
+          order_state: state,
         }, {
           where: {
             order_id: orderId,
@@ -129,7 +137,7 @@ export default class RiderService extends Service {
         }
         return { code: 5100 };
       }
-      return { code: 1000 };
+      return { code: 5000 };
     } catch (err) {
       ctx.logger.error(`========小程序：骑手订单状态错误 RiderController.ModOrder.\n Error: ${err}`);
       return { code: 1000 };

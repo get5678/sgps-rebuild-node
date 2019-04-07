@@ -12,6 +12,12 @@ const GetListInfo = {
 };
 
 const ModInfo = {
+  userId: 'number',
+  orderId: 'number',
+  state: 'number',
+};
+
+const GetOrderInfo = {
   userId: 'string',
   orderId: 'string',
 };
@@ -47,11 +53,11 @@ export default class MppOrderController extends BaseController {
    */
   public async ModOrder() {
     const { ctx, logger } = this;
-    const { userId, orderId } = ctx.request.body;
+    const { userId, orderId, state } = ctx.request.body;
 
     try {
-      ctx.validate(ModInfo);
-      const result = await ctx.service.custom.order.ModOrder({ userId, orderId });
+      ctx.validate(ModInfo, ctx.request.body);
+      const result = await ctx.service.custom.order.ModOrder({ userId, orderId, state });
       if (result && result.code) {
         return this.error({ code: result.code });
       }
@@ -66,14 +72,14 @@ export default class MppOrderController extends BaseController {
   }
   /**
    * @description 小程序获取订单详情
-   * @param ModInfo userId 用户ID orderId 订单ID
+   * @param GetOrderInfo userId 用户ID orderId 订单ID
    */
   public async getOrderDetail() {
     const { ctx, logger } = this;
     const { userId, orderId } = ctx.query;
 
     try {
-      ctx.validate(ModInfo);
+      ctx.validate(GetOrderInfo);
       const result = await ctx.service.custom.order.getOrderDetail({ userId, orderId });
       if (result && result.code) {
         return this.error({ code: result.code });

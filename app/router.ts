@@ -30,6 +30,7 @@ export default (app: Application) => {
   router.post('/api/custom/order/create', controller.custom.order.createOrder); // 创建订单
   router.get('/api/custom/order', controller.custom.order.getList); // 获取订单
   router.get('/api/custom/order/detail', controller.custom.order.getOrderDetail); // 获取订单详情
+  router.post('/api/custom/order/mod', controller.custom.order.ModOrder); // 修改订单状态
   // 优惠券接口
   router.get('/api/custom/coupons/getList', controller.custom.coupons.getList); // 获取优惠券列表
   // 评论接口
@@ -38,6 +39,7 @@ export default (app: Application) => {
   router.post('/api/custom/comment', controller.custom.comment.post); // 上传评论
   // 骑手接口
   router.get('/api/rider/order', controller.rider.rider.getList); // 获取骑手订单
+  router.post('/api/rider/mod', controller.rider.rider.ModOrder); // 修改订单状态
 
   /**
    * @description 管理端接口

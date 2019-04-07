@@ -12,8 +12,9 @@ const GetListInfo = {
 };
 
 const ModInfo = {
-  userId: 'string',
-  orderId: 'string',
+  riderId: 'number',
+  orderId: 'number',
+  state: 'number',
 };
 
 export default class RiderController extends BaseController {
@@ -45,11 +46,11 @@ export default class RiderController extends BaseController {
    */
   public async ModOrder() {
     const { ctx, logger } = this;
-    const { riderId, orderId } = ctx.request.body;
+    const { riderId, orderId, state } = ctx.request.body;
 
     try {
       ctx.validate(ModInfo);
-      const result = await ctx.service.rider.rider.ModOrder({ riderId, orderId });
+      const result = await ctx.service.rider.rider.ModOrder({ riderId, orderId, state });
       if (result && result.code) {
         return this.error({ code: result.code });
       }

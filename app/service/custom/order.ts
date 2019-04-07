@@ -51,6 +51,12 @@ export interface Code {
 export interface ModifyInfo {
   userId: number;
   orderId: number;
+  state: number;
+}
+
+export interface GetOrderDetail {
+  userId: number;
+  orderId: number;
 }
 
 export interface Order {
@@ -129,7 +135,7 @@ export default class MppOrderServer extends Service {
    */
   public async ModOrder(info: ModifyInfo) {
     const { ctx, app } = this;
-    const { userId, orderId } = info;
+    const { userId, orderId, state } = info;
 
     try {
       const list = await app.mysql.select('t_order', {
@@ -139,10 +145,10 @@ export default class MppOrderServer extends Service {
         },
         columns: [ 'order_state' ],
       });
-      const state = list[0].order_state;
-      if (state) {
-        const result = await this.app.mysql.update('t_order', {
-          order_state: 4,
+      const orderState = list[0].order_state;
+      if (orderState) {
+        const result = await app.mysql.update('t_order', {
+          order_state: state,
         }, {
           where: {
             order_id: orderId,
@@ -154,7 +160,7 @@ export default class MppOrderServer extends Service {
         }
         return { code: 5100 };
       }
-      return { code: 1000 };
+      return { code: 5000 };
     } catch (err) {
       ctx.logger.error(`========小程序：调整订单状态错误 MppOrderServer.ModOrder.\n Error: ${err}`);
       return { code: 1000 };
@@ -164,7 +170,7 @@ export default class MppOrderServer extends Service {
    * @description 小程序获取订单详情
    * @param ModInfo userId 用户ID orderId 订单ID
    */
-  public async getOrderDetail(info: ModifyInfo) {
+  public async getOrderDetail(info: GetOrderDetail) {
     const { ctx, app } = this;
     const { userId, orderId } = info;
     const sql = `

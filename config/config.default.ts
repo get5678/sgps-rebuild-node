@@ -46,8 +46,8 @@ export default (appInfo: EggAppInfo) => {
   config.redis = {
     client: {
       port: 6379,
-      host: '106.15.186.5',
-      password: '2418757zpcW',
+      host: '112.74.164.230',
+      password: 'Qff2018...',
       db: 0,
     },
   };
